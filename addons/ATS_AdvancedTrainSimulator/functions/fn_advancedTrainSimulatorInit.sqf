@@ -339,22 +339,22 @@ ATRAIN_Track_Definitions = [
  ["Land_straight_down40",0,false,false,0.06]
 ];
 
-// [Class Name, Is Drivable, Is Rideable, Length In Meters, Model Position Offset ]
+// [Class Name, Is Drivable, Is Rideable, Length In Meters, Model Position Offset, Animate Train ]
 ATRAIN_Train_Definitions = [
-	["Land_Locomotive_01_v1_F", true, false, 5.5, 12, [0,0,0.052]],
-	["Land_Locomotive_01_v2_F", true, false, 5.5, 12, [0,0,0.052]],
-	["Land_Locomotive_01_v3_F", true, false, 5.5, 12, [0,0,0.052]],
-	["Land_RailwayCar_01_passenger_F", false, true, 5.5, 12, [0,0,0.06]],
-	["Land_RailwayCar_01_sugarcane_empty_F", false, true, 3, 12, [0,0,0.052]],
-	["Land_RailwayCar_01_sugarcane_F", false, true, 3, 12, [0,0,0.052]],
-	["Land_RailwayCar_01_tank_F", false, true, 5.5, 12, [0,0,0.08]],
-	["Land_loco_742_blue", true, false, 13.5, 19.4, [0,0.05,-0.14]],
-	["Land_loco_742_red", true, false, 13.5, 19.4, [0,0.05,-0.14]],
-	["Land_wagon_box", false, true, 12, 19.4, [0,-0.43,0.02]],
-	["Land_wagon_flat", false, true, 17.1, 19.4, [0,-0.02,0.04]],
-	["Land_wagon_tanker", false, true, 11.5, 19.4, [0,-0.05,0.02]],
-	["Land_blue_loco", true, false, 13.5, 19.4,  [0,0.05,-0.14]],
-	["Land_red_loco", true, false, 13.5, 19.4,  [0,0.05,-0.14]]
+	["Land_Locomotive_01_v1_F", true, false, 5.5, 12, [0,0,0.052],true],
+	["Land_Locomotive_01_v2_F", true, false, 5.5, 12, [0,0,0.052],true],
+	["Land_Locomotive_01_v3_F", true, false, 5.5, 12, [0,0,0.052],true],
+	["Land_RailwayCar_01_passenger_F", false, true, 5.5, 12, [0,0,0.06],false],
+	["Land_RailwayCar_01_sugarcane_empty_F", false, true, 3, 12, [0,0,0.052],false],
+	["Land_RailwayCar_01_sugarcane_F", false, true, 3, 12, [0,0,0.052],false],
+	["Land_RailwayCar_01_tank_F", false, true, 5.5, 12, [0,0,0.08],false],
+	["Land_loco_742_blue", true, false, 13.5, 19.4, [0,0.05,-0.14],false],
+	["Land_loco_742_red", true, false, 13.5, 19.4, [0,0.05,-0.14],false],
+	["Land_wagon_box", false, true, 12, 19.4, [0,-0.43,0.02],false],
+	["Land_wagon_flat", false, true, 17.1, 19.4, [0,-0.02,0.04],false],
+	["Land_wagon_tanker", false, true, 11.5, 19.4, [0,-0.05,0.02],false],
+	["Land_blue_loco", true, false, 13.5, 19.4,  [0,0.05,-0.14],false],
+	["Land_red_loco", true, false, 13.5, 19.4,  [0,0.05,-0.14],false]
 ];
 
 ATRAIN_Object_Model_To_Type_Map = [
@@ -1430,10 +1430,11 @@ ATRAIN_fnc_initTrainObject = {
 		_train = [_train] call ATRAIN_fnc_hideTrainReplaceWithNew;
 	};
 	private _trainDef = [_train] call ATRAIN_fnc_getTrainDefinition;
-	_trainDef params ["_className", "_isDrivable", "_isRideable", "_carLength", "_maxSpeed", "_positionOffset"];
+	_trainDef params ["_className", "_isDrivable", "_isRideable", "_carLength", "_maxSpeed", "_positionOffset","_animateTrain"];
 	_train setVariable ["ATRAIN_Remote_Car_Length",_carLength,true];
-	_train setVariable ["ATRAIN_Local_Train_Max_Velocity",_maxSpeed];
-	_train setVariable ["ATRAIN_Remote_Position_Offset",_positionOffset];
+	_train setVariable ["ATRAIN_Remote_Train_Max_Velocity",_maxSpeed,true];
+	_train setVariable ["ATRAIN_Remote_Position_Offset",_positionOffset,true];
+	_train setVariable ["ATRAIN_Remove_Animate_Train",_animateTrain,true];
 	_train enableSimulation false;
 	_train;
 };
@@ -1743,6 +1744,27 @@ ATRAIN_fnc_cleanUpNodePath = {
 	_train setVariable ["ATRAIN_Local_Distance_From_Front",_trainDistanceFromStart];
 };
 
+ATRAIN_fnc_setWheelSpeed = {
+	params ["_trainCar","_speed","_isBackwards"];
+	private _isLocalCopy = _trainCar getVariable ["ATRAIN_Is_Local_Copy",false];
+	if(!_isLocalCopy) exitWith {};
+	private _currentPhase = _trainCar animationSourcePhase "Wheels_source";
+	if(_speed == 0) then {
+		_trainCar animateSource ["Wheels_source",_currentPhase];
+	} else {
+		private _phaseDirection  = 1;
+		if( _speed < 0 ) then {
+			_phaseDirection = -1;
+		};
+		if( _isBackwards ) then {
+			_phaseDirection = _phaseDirection * -1;
+		};
+		private _newPhase = _currentPhase + (10 * _phaseDirection);
+		private _animationSpeed = (abs _speed) / 6;
+		_trainCar animateSource ["Wheels_source",_newPhase, _animationSpeed];
+	};
+};
+
 ATRAIN_fnc_drawTrain = {
 	params ["_train"];
 	private _trainCalculationsQueued = _train getVariable ["ATRAIN_Calculations_Queued",true];
@@ -1753,6 +1775,7 @@ ATRAIN_fnc_drawTrain = {
 	private _timeSinceLastSeen = _currentTime - _lastSeen;
 	private _frontCar = _train getVariable ["ATRAIN_Local_Front_Car", _train];
 	private _rearCar = _train getVariable ["ATRAIN_Local_Rear_Car", _train];
+	private _trainSpeed = _train getVariable ["ATRAIN_Local_Velocity",0];
 	
 	{
 		private _localCopy = _x getVariable ["ATRAIN_Local_Copy", objNull];
@@ -1772,10 +1795,11 @@ ATRAIN_fnc_drawTrain = {
 		private _velocityFromLastToNewPosition = _x getVariable ["ATRAIN_Velocity_From_Last_To_New_Position",0];
 		private _directionFromLastToNewPosition = _x getVariable ["ATRAIN_Direction_From_Last_To_New_Position",_lastDrawDirection];
 		private _distanceFromLastToNewPosition = _x getVariable ["ATRAIN_Distance_From_Last_To_New_Position", 0];
+		private _animateTrain = _x getVariable ["ATRAIN_Remove_Animate_Train",false];
 		
 		// Enable in-game simulation for front and rear cars (so that it can collide with objects)
-		if(_x == _frontCar || _x == _rearCar) then {
-			if(_distanceFromLastToNewPosition > 0.01 && _currentTime - _lastAttachmentTime > 3 ) then {
+		if(_x == _frontCar || _x == _rearCar || _animateTrain) then {
+			if(_distanceFromLastToNewPosition > 0.01 && (_currentTime - _lastAttachmentTime > 3 || _animateTrain)  ) then {
 				if(!simulationEnabled _localCopy) then {
 					_localCopy enableSimulation true;
 					_localCopy spawn {
@@ -1844,7 +1868,9 @@ ATRAIN_fnc_drawTrain = {
 				private _rearAlignmentPointDirection = _rearAlignmentPoint select 1;
 				private _trainVectorDirection = _rearAlignmentPointPosition vectorFromTo _frontAlignmentPointPosition;
 				private _trainPosition = _frontAlignmentPointPosition vectorAdd ((_rearAlignmentPointPosition vectorDiff _frontAlignmentPointPosition) vectorMultiply 0.5);
-				if(_x getVariable ["ATRIAN_Remote_Is_Backwards", false]) then {
+				private _trainIsBackwards = _x getVariable ["ATRIAN_Remote_Is_Backwards", false];
+				private _animateTrain = _x getVariable ["ATRAIN_Remove_Animate_Train",false];
+				if(_trainIsBackwards) then {
 					_trainVectorDirection = _trainVectorDirection vectorMultiply -1;
 				};
 				// Offset position based on train model params
@@ -1857,12 +1883,16 @@ ATRAIN_fnc_drawTrain = {
 				_x setVariable ["ATRAIN_Distance_From_Last_To_New_Position",_currentPosition distance _trainPosition];
 				private _velocityFromLastToNewPosition = _x getVariable ["ATRAIN_Velocity_From_Last_To_New_Position",0];
 				if(_timeSinceLastSeen == 0) then {
-					_x setVariable ["ATRAIN_Velocity_From_Last_To_New_Position",( _velocityFromLastToNewPosition  * 0.5)];
+					_velocityFromLastToNewPosition = ( _velocityFromLastToNewPosition  * 0.5);
 				} else {
 					private _newVelocityFromLastToNewPosition = ((_currentPosition distance _trainPosition) / _timeSinceLastSeen);
-					_x setVariable ["ATRAIN_Velocity_From_Last_To_New_Position",( _velocityFromLastToNewPosition  * 0.5) + ( _newVelocityFromLastToNewPosition * 0.5) ];
+					_velocityFromLastToNewPosition = ( _velocityFromLastToNewPosition  * 0.5) + ( _newVelocityFromLastToNewPosition * 0.5);
 				};
+				_x setVariable ["ATRAIN_Velocity_From_Last_To_New_Position", _velocityFromLastToNewPosition ];
 				_x setVariable ["ATRAIN_Direction_From_Last_To_New_Position",_currentPosition vectorFromTo _trainPosition];
+				if(_animateTrain) then {
+					[_localCopy,_trainSpeed,_trainIsBackwards] call ATRAIN_fnc_setWheelSpeed;
+				};
 			};
 			_x setVariable ["ATRAIN_Last_Draw_Position",_currentPosition];
 			_x setVariable ["ATRAIN_Last_Draw_Vector_Dir",vectorDir _localCopy];
@@ -1918,7 +1948,7 @@ ATRAIN_fnc_simulateTrainVelocity = {
 		_trainDrag = _trainDrag * 2;
 	};
 	
-	private _trainMaxVelocity = _train getVariable ["ATRAIN_Local_Train_Max_Velocity",12];
+	private _trainMaxVelocity = _train getVariable ["ATRAIN_Remote_Train_Max_Velocity",12];
 	private _trainVelocity = _train getVariable ["ATRAIN_Local_Velocity",0];
 	_trainVelocity = (_trainVelocity + (_trainAcceleration * _movementDirection * _deltaCalcTime)) min _trainMaxVelocity max -_trainMaxVelocity;
 	if(_trainVelocity > 0 && _movementDirection == 0) then {
