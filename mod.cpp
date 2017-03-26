@@ -1,0 +1,12 @@
+name = "Advanced Train Simulator";
+picture = "logo.paa";
+description = "Advanced Train Simulator";
+logo = "logo.paa";
+logoOver = "logo.paa";
+tooltip = "Advanced Train Simulator";
+tooltipOwned = "Advanced Train Simulator Owned";
+overview = "Advanced Train Simulator";
+author = "[SA] Duda";
+overviewPicture = "logo.paa";
+overviewText = "Advanced Train Simulator";
+overviewFootnote = "";
