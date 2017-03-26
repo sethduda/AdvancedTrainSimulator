@@ -4,31 +4,32 @@ Created by Duda
 
 **Features:**
 
-Drive and ride on trains in Arma 3!
-Supports all existing trains and tracks on Tanoa.
-Create custom tracks by placing APEX track objects in the editor (see directions below).
-Multiplayer support. Mod only required to be installed on server.
-Supports APEX and CUPS train models.
-Supports APEX tracks (CUPS tracks still in the works!).
+ - Drive and ride on trains in Arma 3!
+ - Supports all existing trains and tracks on Tanoa.
+ - Create custom tracks by placing APEX track objects in the editor (see directions below).
+ - Multiplayer support. Mod only required to be installed on server.
+ - Supports APEX and CUPS train models.
+ - Supports APEX tracks (CUPS tracks still in the works!).
 
 **Directions:**
  
 While outside of a train, there are a few actions you can perform. Look directly at the train to get these possible actions:
  
-Get in Train as Driver: When looking at a train engine, you'll get this option to become the driver of the train. See train driver controls below.
-Disconnect Car: When looking at a car connected to a train, you'll get this option. This will disconnect the car from the train. The train cannot be moving.
-Ride Train: When looking at a train car (attached to a train someone else is driving) you'll get this option to ride the train. See train passenger controls below.
+ - Get in Train as Driver: When looking at a train engine, you'll get this option to become the driver of the train. See train driver controls below.
+ - Disconnect Car: When looking at a car connected to a train, you'll get this option. This will disconnect the car from the train. The train cannot be moving.
+ - Ride Train: When looking at a train car (attached to a train someone else is driving) you'll get this option to ride the train. See train passenger controls below.
  
 Train Driver Controls:
 
-Move Forward (defaults to W key): Speed up the train
-Move Backward (defaults to S key): Slow down the train
-Turn Left (defaults to A key): Controls track switching. Hold "Move Left" as you pass an intersection to direct the train down the left-most path.
-Turn Right (defaults to D key): Controls track switching. Hold "Move Right" as you pass an intersection to direct the train down the right-most path.
-Enabled / Disable Cruise Control (C key): When enabled, the train will maintain its current speed automatically (even if you jump out of the train - runaway train!)
-Break (B key): A faster way to slow down your train besides holding down the Move Backwards key
-Exit Train (delete key): Exit the current train
-     Note: If you don't hold left or right while passing an intersection, the train will choose the path that requires the least amount of turning.
+ - Move Forward (defaults to W key): Speed up the train
+ - Move Backward (defaults to S key): Slow down the train
+ - Turn Left (defaults to A key): Controls track switching. Hold "Move Left" as you pass an intersection to direct the train down the left-most path.
+ - Turn Right (defaults to D key): Controls track switching. Hold "Move Right" as you pass an intersection to direct the train down the right-most path.
+ - Enabled / Disable Cruise Control (C key): When enabled, the train will maintain its current speed automatically (even if you jump out of the train - runaway train!)
+ - Break (B key): A faster way to slow down your train besides holding down the Move Backwards key
+ - Exit Train (delete key): Exit the current train.
+ 
+ Note: If you don't hold left or right while passing an intersection, the train will choose the path that requires the least amount of turning.
  
 Train Passenger Controls:
 
