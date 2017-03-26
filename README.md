@@ -45,11 +45,11 @@ Custom track objects can be placed via the editor on any map. They can also conn
  
 1. All tracks must be terminated with the track termination object. If you don't do this, the train won't be able to follow your track that has no termination.
 
-track_placement_1.jpg
+![](https://github.com/sethduda/AdvancedTrainSimulator/blob/master/screenshots/track_placement_1.jpg?raw=true)
  
 2. Intersections must use the intersection track objects. Intersection track objects can be place on top of other tracks. You cannot create intersections using straight or curved tracks.
  
-track_placement_2.jpg
+![](https://github.com/sethduda/AdvancedTrainSimulator/blob/master/screenshots/track_placement_2.jpg?raw=true)
 
 **Installation:**
 
