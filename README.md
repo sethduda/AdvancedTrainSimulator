@@ -4,7 +4,51 @@ Created by Duda
 
 **Features:**
 
+Drive and ride on trains in Arma 3!
+Supports all existing trains and tracks on Tanoa.
+Create custom tracks by placing APEX track objects in the editor (see directions below).
+Multiplayer support. Mod only required to be installed on server.
+Supports APEX and CUPS train models.
+Supports APEX tracks (CUPS tracks still in the works!).
+
 **Directions:**
+ 
+While outside of a train, there are a few actions you can perform. Look directly at the train to get these possible actions:
+ 
+Get in Train as Driver: When looking at a train engine, you'll get this option to become the driver of the train. See train driver controls below.
+Disconnect Car: When looking at a car connected to a train, you'll get this option. This will disconnect the car from the train. The train cannot be moving.
+Ride Train: When looking at a train car (attached to a train someone else is driving) you'll get this option to ride the train. See train passenger controls below.
+ 
+Train Driver Controls:
+
+Move Forward (defaults to W key): Speed up the train
+Move Backward (defaults to S key): Slow down the train
+Turn Left (defaults to A key): Controls track switching. Hold "Move Left" as you pass an intersection to direct the train down the left-most path.
+Turn Right (defaults to D key): Controls track switching. Hold "Move Right" as you pass an intersection to direct the train down the right-most path.
+Enabled / Disable Cruise Control (C key): When enabled, the train will maintain its current speed automatically (even if you jump out of the train - runaway train!)
+Break (B key): A faster way to slow down your train besides holding down the Move Backwards key
+Exit Train (delete key): Exit the current train
+     Note: If you don't hold left or right while passing an intersection, the train will choose the path that requires the least amount of turning.
+ 
+Train Passenger Controls:
+
+Exit Train (delete key): Exit the current train
+ 
+Train Placement
+
+Train objects can be placed on any tracks, including custom tracks. The train must be placed on top of the track. It's not important that the train object lines up perfectly. As long as it's on top of the track, it will work. All existing trains on the Tanoa map will work as-is. Currently, all of the train objects from APEX and CUPS are supported.
+ 
+Track Placement
+
+Custom track objects can be placed via the editor on any map. They can also connect on to the existing tracks placed on Tanoa. Only the track objects included with APEX are supported.
+ 
+1. All tracks must be terminated with the track termination object. If you don't do this, the train won't be able to follow your track that has no termination.
+
+track_placement_1.jpg
+ 
+2. Intersections must use the intersection track objects. Intersection track objects can be place on top of other tracks. You cannot create intersections using straight or curved tracks.
+ 
+track_placement_2.jpg
 
 **Installation:**
 
