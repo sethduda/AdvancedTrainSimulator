@@ -33,7 +33,7 @@ Train Driver Controls:
  
 Train Passenger Controls:
 
-Exit Train (delete key): Exit the current train
+ - Exit Train (delete key): Exit the current train
  
 Train Placement
 
