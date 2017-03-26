@@ -1,6 +1,6 @@
-# Advanced Train Simulator
+# Advanced Train Simulator (ATS)
 
-Created by Duda
+![](https://github.com/sethduda/AdvancedTrainSimulator/blob/master/steamLogo.jpg?raw=true)
 
 **Features:**
 
