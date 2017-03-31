@@ -1403,12 +1403,12 @@ ATRAIN_fnc_hideTrainReplaceWithNew = {
 	};
 	if(isObjectHidden _train) then {
 		if(_newObjectIsGlobal) then {
-			_newTrain = createVehicle [_className, getPosASLVisual _train, [], 0, "CAN_COLLIDE"];
+			_newTrain = createVehicle [_className, ASLToAGL getPosASLVisual _train, [], 0, "CAN_COLLIDE"];
 		} else {
-			_newTrain = _className createVehicleLocal (getPosASLVisual _train);
+			_newTrain = _className createVehicleLocal ASLToAGL (getPosASLVisual _train);
 		};
-		_newTrain setPosASL (getPosASLVisual _train);
 		_newTrain setVectorDirAndUp [vectorDir _train, vectorUp _train];
+		_newTrain setPosASL (getPosASLVisual _train);
 	};
 	_newTrain;
 };
