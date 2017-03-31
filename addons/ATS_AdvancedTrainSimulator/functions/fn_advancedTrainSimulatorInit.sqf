@@ -299,8 +299,8 @@ ATRAIN_Track_Definitions = [
  ["Land_Track_01_30deg_F",0.6,false,false], 
  ["Land_Track_01_bridge_F",0,false,false], 
  ["Land_Track_01_bumper_F",0,false,true], 
- ["Land_Track_01_turnout_left_F",0.2,true,false], 
- ["Land_Track_01_turnout_right_F",-0.2,true,false],
+ ["Land_Track_01_turnout_left_F",0.55,true,false], 
+ ["Land_Track_01_turnout_right_F",-0.55,true,false],
  ["CUP_Railway_rails_bridge_40",0,false,false],
  ["CUP_Railway_rails_curve_L25_10",0,false,false],
  ["CUP_Railway_rails_curve_R25_10",0,false,false],
@@ -341,12 +341,12 @@ ATRAIN_Track_Definitions = [
 
 // [Class Name, Is Drivable, Is Rideable, Length In Meters, Model Position Offset, Animate Train ]
 ATRAIN_Train_Definitions = [
-	["Land_Locomotive_01_v1_F", true, false, 5.5, 12, [0,0,0.052],true],
-	["Land_Locomotive_01_v2_F", true, false, 5.5, 12, [0,0,0.052],true],
-	["Land_Locomotive_01_v3_F", true, false, 5.5, 12, [0,0,0.052],true],
+	["Land_Locomotive_01_v1_F", true, false, 5.3, 12, [0,0,0.052],true],
+	["Land_Locomotive_01_v2_F", true, false, 5.3, 12, [0,0,0.052],true],
+	["Land_Locomotive_01_v3_F", true, false, 5.3, 12, [0,0,0.052],true],
 	["Land_RailwayCar_01_passenger_F", false, true, 5.5, 12, [0,0,0.06],true],
-	["Land_RailwayCar_01_sugarcane_empty_F", false, true, 3, 12, [0,0,0.052],true],
-	["Land_RailwayCar_01_sugarcane_F", false, true, 3, 12, [0,0,0.052],true],
+	["Land_RailwayCar_01_sugarcane_empty_F", false, true, 3.2, 12, [0,0,0.052],true],
+	["Land_RailwayCar_01_sugarcane_F", false, true, 3.2, 12, [0,0,0.052],true],
 	["Land_RailwayCar_01_tank_F", false, true, 5.5, 12, [0,0,0.08],true],
 	["Land_loco_742_blue", true, false, 13.5, 19.4, [0,0.05,-0.14],false],
 	["Land_loco_742_red", true, false, 13.5, 19.4, [0,0.05,-0.14],false],
@@ -892,12 +892,12 @@ ATRAIN_fnc_findConnectedTrackNodes = {
 			};
 			
 			// Track node found or no valid node found ( will search 10m beyond end of track )
-			if(_trackNodeFound || _distanceFromFront < -5) exitWith {};
+			if(_trackNodeFound || _distanceFromFront < -10) exitWith {};
 
 			if(_distanceFromFront > 0 && !(_lastSeenTrack in ATRAIN_TRACKS_NEAR_EDITOR_PLACED_CONNECTIONS)) then {
 				_distanceFromFront = 0;
 			} else {
-				_distanceFromFront = _distanceFromFront - 2;
+				_distanceFromFront = _distanceFromFront - 1.1;
 			};
 
 		};	
@@ -980,7 +980,7 @@ CREATE_MARKER = {
 
 ARROWS = [];
 
-	/*
+/*
 player addAction ["Test Track", {
 	
 	_timeStart2 = 0;
@@ -1026,7 +1026,7 @@ player addAction ["Test Track", {
 	//_timeEnd = diag_tickTime;
 	//hintSilent str [(_timeEnd - _timeStart),(_timeEnd2 - _timeStart2),ATRAIN_COUNT,ATRAIN_TIME];
 }];
-*/			
+*/
 
 ATRAIN_fnc_getTrackWorldPaths = {
 	params ["_track"];
@@ -1669,8 +1669,8 @@ ATRAIN_fnc_passengerMoveInputHandler = {
 ATRAIN_fnc_calculateTrainAlignment = {
 	params ["_trainEngine","_trainCar","_trainDistanceFromFront"];
 	private _carLength = _trainCar getVariable ["ATRAIN_Remote_Car_Length",6];
-	private _carFrontPositionAndDirection = [_trainEngine, _trainCar, _trainDistanceFromFront - (_carLength * 0.3)] call ATRAIN_fnc_getTrainPositionAndDirection;
-	private _carBackPositionAndDirection = [_trainEngine, _trainCar, _trainDistanceFromFront + (_carLength * 0.3)] call ATRAIN_fnc_getTrainPositionAndDirection;
+	private _carFrontPositionAndDirection = [_trainEngine, _trainCar, _trainDistanceFromFront - (_carLength * 0.4)] call ATRAIN_fnc_getTrainPositionAndDirection;
+	private _carBackPositionAndDirection = [_trainEngine, _trainCar, _trainDistanceFromFront + (_carLength * 0.4)] call ATRAIN_fnc_getTrainPositionAndDirection;
 	[_carFrontPositionAndDirection, _carBackPositionAndDirection];
 };
 
@@ -1764,11 +1764,9 @@ ATRAIN_fnc_drawTrain = {
 	private _currentTime = diag_tickTime;
 	private _lastSeen = _train getVariable ["ATRAIN_New_Alignment_Last_Seen",diag_tickTime];
 	private _timeSinceLastSeen = _currentTime - _lastSeen;
-	private _frontCar = _train getVariable ["ATRAIN_Local_Front_Car", _train];
-	private _rearCar = _train getVariable ["ATRAIN_Local_Rear_Car", _train];
 	private _trainSpeed = _train getVariable ["ATRAIN_Local_Velocity",0];
 	
-	private _maxAnimatedCars = missionNamespace getVariable ["ATRAIN_MAX_CARS_SIMULATED_ENABLED", 1000];
+	private _maxAnimatedCars = missionNamespace getVariable ["ATRAIN_MAX_CARS_SIMULATED_ENABLED", 3];
 	private _carsWithAnimationEnabled = 0;	
 	
 	{
@@ -1809,31 +1807,6 @@ ATRAIN_fnc_drawTrain = {
 				_localCopy enableSimulation false;
 			};
 		};
-		
-		/*
-		if(_x == _frontCar || _x == _rearCar || _animateTrain) then {
-			if(_distanceFromLastToNewPosition > 0.01 && (_currentTime - _lastAttachmentTime > 3 || _animateTrain)  ) then {
-				if(!simulationEnabled _localCopy) then {
-					_localCopy enableSimulation true;
-					_localCopy spawn {
-						sleep 2;
-						if(!simulationEnabled _this) then {
-							_this enableSimulation true;
-						};
-					};
-				};
-			} else {
-				// Disable simulation while not moving (because train's position isn't set while not moving)
-				if(simulationEnabled _localCopy) then {
-					_localCopy enableSimulation false;
-				};
-			};
-		} else {
-			if(simulationEnabled _localCopy) then {
-				_localCopy enableSimulation false;
-			};
-		};
-		*/
 		
 		if(_distanceFromLastToNewPosition > 0.01) then {
 			private _distanceMovedFromLastPosition = _timeSinceLastSeen * _velocityFromLastToNewPosition;
@@ -2109,6 +2082,7 @@ ATRAIN_fnc_simulateTrain = {
 	private _lastSimulationTime = _train getVariable ["ATRAIN_Local_Last_Simulation_Time",_currentSimulationTime];
 	_train setVariable ["ATRAIN_Local_Last_Simulation_Time",_currentSimulationTime];
 	private _deltaSimulationTime = _currentSimulationTime - _lastSimulationTime;
+	
 	if(_deltaSimulationTime > 5) then {
 		_deltaSimulationTime = 0;
 	};
@@ -2154,65 +2128,7 @@ ATRAIN_fnc_simulateTrain = {
 		_priorCarLength = _carLength;
 	} forEach _trainCarsInFront;
 	private _distanceFromEngineToFront = (_trainDistanceFromFront - _carDistanceFrontStart) + ( _priorCarLength / 2 );
-	
-	_train setVariable ["ATRAIN_Local_Front_Car", _frontCar];
-	_train setVariable ["ATRAIN_Local_Rear_Car", _rearCar];
-	
-	/*
-	
-	// Enable in-game simulation for train
-	private _maxAnimatedCars = missionNamespace getVariable ["ATRAIN_MAX_CARS_SIMULATED_ENABLED", 1000];
-	private _carsWithAnimationEnabled = 0;	
-	{
-		if(_carsWithAnimationEnabled < _maxAnimatedCars) then {
-			_carsWithAnimationEnabled = _carsWithAnimationEnabled + 1;
-			if(!simulationEnabled _x) then {
-				_x enableSimulation true;
-			};
-		} else {
-			if(simulationEnabled _x) then {
-				_x enableSimulation false;
-			};
-		};
-	} forEach _trainCarsInFront;
-	{
-		if(_carsWithAnimationEnabled < _maxAnimatedCars) then {
-			_carsWithAnimationEnabled = _carsWithAnimationEnabled + 1;
-			if(!simulationEnabled _x) then {
-				_x enableSimulation true;
-			};
-		} else {
-			if(simulationEnabled _x) then {
-				_x enableSimulation false;
-			};
-		};
-	} forEach _trainCarsInRear;
-	
-	*/
-	
-	/*
-	if(_x == _frontCar || _x == _rearCar || _animateTrain) then {
-		if(_distanceFromLastToNewPosition > 0.01 && (_currentTime - _lastAttachmentTime > 3 || _animateTrain)  ) then {
-			if(!simulationEnabled _localCopy) then {
-				_localCopy enableSimulation true;
-				_localCopy spawn {
-					sleep 2;
 
-				};
-			};
-		} else {
-			// Disable simulation while not moving (because train's position isn't set while not moving)
-			if(simulationEnabled _localCopy) then {
-				_localCopy enableSimulation false;
-			};
-		};
-	} else {
-		if(simulationEnabled _localCopy) then {
-			_localCopy enableSimulation false;
-		};
-	};
-	*/
-	
 	// Calculate track node updates
 	private _nodePath = _train getVariable ["ATRAIN_Local_Node_Path",[]];
 	private _trainNodePathDistance = _train getVariable ["ATRAIN_Local_Node_Path_Distance",0];
