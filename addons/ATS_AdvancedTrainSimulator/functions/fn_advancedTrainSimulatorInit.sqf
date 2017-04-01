@@ -36,7 +36,7 @@ ATRAIN_Advanced_Train_Simulator_Install = {
 if(!isNil "ATRAIN_INIT") exitWith {};
 ATRAIN_INIT = true;
 
-diag_log "Advanced Train Simulator (ATS) 1.0 Loading...";
+diag_log "Advanced Train Simulator (ATS) 1.1 Loading...";
 
 ATRAIN_fnc_cameraUpdatePosition = {
 	private _cam = ATRAIN_FNC_CAMERA;
@@ -220,9 +220,6 @@ ATRAIN_fnc_getTracksAtPosition = {
 	private _intersectStartASL = _positionASL vectorAdd [0,0,2] vectorAdd (_approachDirectionVector vectorMultiply -4);
 	private _intersectEndASL = _positionASL vectorAdd [0,0,-2] vectorAdd (_approachDirectionVector vectorMultiply 4);
 	private _objects = lineIntersectsWith [_intersectStartASL,_intersectEndASL,_ignoreObject];
-	//private _objects = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _ignoreObject, objNull, true, 5];
-	//ATRAIN_ALL_OBJS = _objects;
-	//private _objects = lineIntersectsObjs [_intersectStartASL, _intersectEndASL, objNull, _ignoreObject, false, 32];
 	private _foundTracks = [];
 	private _didFindTracks = false;
 	private _trackDef = [];
@@ -237,36 +234,6 @@ ATRAIN_fnc_getTracksAtPosition = {
 			};
 		};
 	} forEach _objects;
-	/*
-	if(!_didFindTracks) then {
-		_objects = nearestTerrainObjects [ASLToATL _positionASL, ["RAILWAY"], 3, false, true];
-		//[_positionASL] call CREATE_MARKER;
-		{
-			private _object = _x;
-			if(!isNull _object && _ignoreObject != _object) then {
-				_trackDef = [_object] call ATRAIN_fnc_getTrackDefinition;
-				if(count _trackDef > 0) then {
-					_foundTracks pushBack _object;
-					_didFindTracks = true;
-				};
-			};
-		} forEach _objects;
-	};
-	if(!_didFindTracks) then {
-		//[_positionASL] call CREATE_MARKER;
-		_objects = (ASLToATL _positionASL) nearObjects 3;
-		{
-			private _object = _x;
-			if(!isNull _object && _ignoreObject != _object) then {
-				_trackDef = [_object] call ATRAIN_fnc_getTrackDefinition;
-				if(count _trackDef > 0) then {
-					_foundTracks pushBack _object;
-					_didFindTracks = true;
-				};
-			};
-		} forEach _objects;
-	};
-	*/
 	PROFILE_STOP;
 	_foundTracks;
 };
@@ -301,34 +268,6 @@ ATRAIN_Track_Definitions = [
  ["Land_Track_01_bumper_F",0,false,true], 
  ["Land_Track_01_turnout_left_F",0.55,true,false], 
  ["Land_Track_01_turnout_right_F",-0.55,true,false],
- ["CUP_Railway_rails_bridge_40",0,false,false],
- ["CUP_Railway_rails_curve_L25_10",0,false,false],
- ["CUP_Railway_rails_curve_R25_10",0,false,false],
- ["CUP_Railway_rails_down_25",0,false,false],
- ["CUP_Railway_rails_down_40",0,false,false],
- ["CUP_Railway_rails_linebreak_concrete",0,false,true],
- ["CUP_Railway_rails_linebreak_iron",0,false,true],
- ["CUP_Railway_rails_passing_10",0,false,false],
- ["CUP_Railway_rails_passing_25",0,false,false],
- ["CUP_Railway_rails_turnout_L",0,true,false],
- ["CUP_Railway_rails_turnout_R",0,true,false],
- ["CUP_Railway_rails_up_25",0,false,false],
- ["CUP_Railway_rails_up_40",0,false,false],
- ["CUP_Railway_rails_v_LB_RE",0,false,true],
- ["CUP_Railway_rails_v_LE_RB",0,false,true],
- ["CUP_Railway_rails_v_SP",0,false,false],
- ["CUP_Railway_rails_v1_LB_RE",0,false,true],
- ["CUP_Railway_rails_v1_LE_RB",0,false,true],
- ["CUP_Railway_railsN_25",0,false,false],
- ["CUP_Railway_railsN_40",0,false,false],
- ["CUP_Railway_railsN_curve_L25_10",0,false,false],
- ["CUP_Railway_railsN_curve_L25_5",0,false,false],
- ["CUP_Railway_railsN_curve_L30_20",0,false,false],
- ["CUP_Railway_railsN_curve_R25_10",0,false,false],
- ["CUP_Railway_railsN_curve_R25_5",0,false,false],
- ["CUP_Railway_railsN_curve_R30_20",0,false,false],
- ["CUP_Railway_railsN_turnout_L",0,true,false],
- ["CUP_Railway_railsN_turnout_R",0,true,false],
  ["Land_straight40",0,false,false,0.06],
  ["Land_straight25",0,false,false,0.06],
  ["Land_left_turn",1,true,false,0.06],
@@ -374,36 +313,7 @@ ATRAIN_Object_Model_To_Type_Map = [
 	["railwaycar_01_passenger_f.p3d","Land_RailwayCar_01_passenger_F"],
 	["railwaycar_01_sugarcane_empty_f.p3d","Land_RailwayCar_01_sugarcane_empty_F"],
 	["railwaycar_01_sugarcane_f.p3d","Land_RailwayCar_01_sugarcane_F"],
-	["railwaycar_01_tank_f.p3d","Land_RailwayCar_01_tank_F"],
-	["rails_25.p3d","rails_25"],
-	["rails_bridge_40.p3d","CUP_Railway_rails_bridge_40"],
-	["rails_curve_l25_10.p3d","CUP_Railway_rails_curve_L25_10"],
-	["rails_curve_r25_10.p3d","CUP_Railway_rails_curve_R25_10"],
-	["rails_down_25.p3d","CUP_Railway_rails_down_25"],
-	["rails_down_40.p3d","CUP_Railway_rails_down_40"],
-	["rails_linebreak_concrete.p3d","CUP_Railway_rails_linebreak_concrete"],
-	["rails_linebreak_iron.p3d","CUP_Railway_rails_linebreak_iron"],
-	["rails_passing_10.p3d","CUP_Railway_rails_passing_10"],
-	["rails_passing_25.p3d","CUP_Railway_rails_passing_25"],
-	["rails_turnout_l.p3d","CUP_Railway_rails_turnout_L"],
-	["rails_turnout_r.p3d","CUP_Railway_rails_turnout_R"],
-	["rails_up_25.p3d","CUP_Railway_rails_up_25"],
-	["rails_up_40.p3d","CUP_Railway_rails_up_40"],
-	["rails_v_lb_re.p3d","CUP_Railway_rails_v_LB_RE"],
-	["rails_v_le_rb.p3d","CUP_Railway_rails_v_LE_RB"],
-	["rails_v_sp.p3d","CUP_Railway_rails_v_SP"],
-	["rails_v1_lb_re.p3d","CUP_Railway_rails_v1_LB_RE"],
-	["rails_v1_le_rb.p3d","CUP_Railway_rails_v1_LE_RB"],
-	["railsn_25.p3d","CUP_Railway_railsN_25"],
-	["railsn_40.p3d","CUP_Railway_railsN_40"],
-	["railsn_curve_l25_10.p3d","CUP_Railway_railsN_curve_L25_10"],
-	["railsn_curve_l25_5.p3d","CUP_Railway_railsN_curve_L25_5"],
-	["railsn_curve_l30_20.p3d","CUP_Railway_railsN_curve_L30_20"],
-	["railsn_curve_r25_10.p3d","CUP_Railway_railsN_curve_R25_10"],
-	["railsn_curve_r25_5.p3d","CUP_Railway_railsN_curve_R25_5"],
-	["railsn_curve_r30_20.p3d","CUP_Railway_railsN_curve_R30_20"],
-	["railsn_turnout_l.p3d","CUP_Railway_railsN_turnout_L"],
-	["railsn_turnout_r.p3d","CUP_Railway_railsN_turnout_R"]
+	["railwaycar_01_tank_f.p3d","Land_RailwayCar_01_tank_F"]
 ];
 
 // Returns [Class Name, Is Static]
@@ -450,7 +360,6 @@ ATRAIN_fnc_getTrainDefinition = {
 	_trainDef;
 };
 
-// 1%
 ATRAIN_fnc_addWorldPaths = {
 	PROFILE_START("ATRAIN_fnc_addWorldPaths");
 
