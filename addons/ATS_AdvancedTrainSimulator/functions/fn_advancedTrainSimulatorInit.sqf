@@ -36,7 +36,7 @@ ATRAIN_Advanced_Train_Simulator_Install = {
 if(!isNil "ATRAIN_INIT") exitWith {};
 ATRAIN_INIT = true;
 
-diag_log "Advanced Train Simulator (ATS) 1.0 Loading...";
+diag_log "Advanced Train Simulator (ATS) 1.1 Loading...";
 
 ATRAIN_fnc_cameraUpdatePosition = {
 	private _cam = ATRAIN_FNC_CAMERA;
@@ -220,9 +220,6 @@ ATRAIN_fnc_getTracksAtPosition = {
 	private _intersectStartASL = _positionASL vectorAdd [0,0,2] vectorAdd (_approachDirectionVector vectorMultiply -4);
 	private _intersectEndASL = _positionASL vectorAdd [0,0,-2] vectorAdd (_approachDirectionVector vectorMultiply 4);
 	private _objects = lineIntersectsWith [_intersectStartASL,_intersectEndASL,_ignoreObject];
-	//private _objects = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _ignoreObject, objNull, true, 5];
-	//ATRAIN_ALL_OBJS = _objects;
-	//private _objects = lineIntersectsObjs [_intersectStartASL, _intersectEndASL, objNull, _ignoreObject, false, 32];
 	private _foundTracks = [];
 	private _didFindTracks = false;
 	private _trackDef = [];
@@ -237,36 +234,6 @@ ATRAIN_fnc_getTracksAtPosition = {
 			};
 		};
 	} forEach _objects;
-	/*
-	if(!_didFindTracks) then {
-		_objects = nearestTerrainObjects [ASLToATL _positionASL, ["RAILWAY"], 3, false, true];
-		//[_positionASL] call CREATE_MARKER;
-		{
-			private _object = _x;
-			if(!isNull _object && _ignoreObject != _object) then {
-				_trackDef = [_object] call ATRAIN_fnc_getTrackDefinition;
-				if(count _trackDef > 0) then {
-					_foundTracks pushBack _object;
-					_didFindTracks = true;
-				};
-			};
-		} forEach _objects;
-	};
-	if(!_didFindTracks) then {
-		//[_positionASL] call CREATE_MARKER;
-		_objects = (ASLToATL _positionASL) nearObjects 3;
-		{
-			private _object = _x;
-			if(!isNull _object && _ignoreObject != _object) then {
-				_trackDef = [_object] call ATRAIN_fnc_getTrackDefinition;
-				if(count _trackDef > 0) then {
-					_foundTracks pushBack _object;
-					_didFindTracks = true;
-				};
-			};
-		} forEach _objects;
-	};
-	*/
 	PROFILE_STOP;
 	_foundTracks;
 };
@@ -299,36 +266,8 @@ ATRAIN_Track_Definitions = [
  ["Land_Track_01_30deg_F",0.6,false,false], 
  ["Land_Track_01_bridge_F",0,false,false], 
  ["Land_Track_01_bumper_F",0,false,true], 
- ["Land_Track_01_turnout_left_F",0.2,true,false], 
- ["Land_Track_01_turnout_right_F",-0.2,true,false],
- ["CUP_Railway_rails_bridge_40",0,false,false],
- ["CUP_Railway_rails_curve_L25_10",0,false,false],
- ["CUP_Railway_rails_curve_R25_10",0,false,false],
- ["CUP_Railway_rails_down_25",0,false,false],
- ["CUP_Railway_rails_down_40",0,false,false],
- ["CUP_Railway_rails_linebreak_concrete",0,false,true],
- ["CUP_Railway_rails_linebreak_iron",0,false,true],
- ["CUP_Railway_rails_passing_10",0,false,false],
- ["CUP_Railway_rails_passing_25",0,false,false],
- ["CUP_Railway_rails_turnout_L",0,true,false],
- ["CUP_Railway_rails_turnout_R",0,true,false],
- ["CUP_Railway_rails_up_25",0,false,false],
- ["CUP_Railway_rails_up_40",0,false,false],
- ["CUP_Railway_rails_v_LB_RE",0,false,true],
- ["CUP_Railway_rails_v_LE_RB",0,false,true],
- ["CUP_Railway_rails_v_SP",0,false,false],
- ["CUP_Railway_rails_v1_LB_RE",0,false,true],
- ["CUP_Railway_rails_v1_LE_RB",0,false,true],
- ["CUP_Railway_railsN_25",0,false,false],
- ["CUP_Railway_railsN_40",0,false,false],
- ["CUP_Railway_railsN_curve_L25_10",0,false,false],
- ["CUP_Railway_railsN_curve_L25_5",0,false,false],
- ["CUP_Railway_railsN_curve_L30_20",0,false,false],
- ["CUP_Railway_railsN_curve_R25_10",0,false,false],
- ["CUP_Railway_railsN_curve_R25_5",0,false,false],
- ["CUP_Railway_railsN_curve_R30_20",0,false,false],
- ["CUP_Railway_railsN_turnout_L",0,true,false],
- ["CUP_Railway_railsN_turnout_R",0,true,false],
+ ["Land_Track_01_turnout_left_F",0.55,true,false], 
+ ["Land_Track_01_turnout_right_F",-0.55,true,false],
  ["Land_straight40",0,false,false,0.06],
  ["Land_straight25",0,false,false,0.06],
  ["Land_left_turn",1,true,false,0.06],
@@ -341,13 +280,13 @@ ATRAIN_Track_Definitions = [
 
 // [Class Name, Is Drivable, Is Rideable, Length In Meters, Model Position Offset, Animate Train ]
 ATRAIN_Train_Definitions = [
-	["Land_Locomotive_01_v1_F", true, false, 5.5, 12, [0,0,0.052],true],
-	["Land_Locomotive_01_v2_F", true, false, 5.5, 12, [0,0,0.052],true],
-	["Land_Locomotive_01_v3_F", true, false, 5.5, 12, [0,0,0.052],true],
-	["Land_RailwayCar_01_passenger_F", false, true, 5.5, 12, [0,0,0.06],false],
-	["Land_RailwayCar_01_sugarcane_empty_F", false, true, 3, 12, [0,0,0.052],false],
-	["Land_RailwayCar_01_sugarcane_F", false, true, 3, 12, [0,0,0.052],false],
-	["Land_RailwayCar_01_tank_F", false, true, 5.5, 12, [0,0,0.08],false],
+	["Land_Locomotive_01_v1_F", true, false, 5.3, 12, [0,0,0.052],true],
+	["Land_Locomotive_01_v2_F", true, false, 5.3, 12, [0,0,0.052],true],
+	["Land_Locomotive_01_v3_F", true, false, 5.3, 12, [0,0,0.052],true],
+	["Land_RailwayCar_01_passenger_F", false, true, 5.5, 12, [0,0,0.06],true],
+	["Land_RailwayCar_01_sugarcane_empty_F", false, true, 3.2, 12, [0,0,0.052],true],
+	["Land_RailwayCar_01_sugarcane_F", false, true, 3.2, 12, [0,0,0.052],true],
+	["Land_RailwayCar_01_tank_F", false, true, 5.5, 12, [0,0,0.08],true],
 	["Land_loco_742_blue", true, false, 13.5, 19.4, [0,0.05,-0.14],false],
 	["Land_loco_742_red", true, false, 13.5, 19.4, [0,0.05,-0.14],false],
 	["Land_wagon_box", false, true, 12, 19.4, [0,-0.43,0.02],false],
@@ -374,40 +313,8 @@ ATRAIN_Object_Model_To_Type_Map = [
 	["railwaycar_01_passenger_f.p3d","Land_RailwayCar_01_passenger_F"],
 	["railwaycar_01_sugarcane_empty_f.p3d","Land_RailwayCar_01_sugarcane_empty_F"],
 	["railwaycar_01_sugarcane_f.p3d","Land_RailwayCar_01_sugarcane_F"],
-	["railwaycar_01_tank_f.p3d","Land_RailwayCar_01_tank_F"],
-	["rails_25.p3d","rails_25"],
-	["rails_bridge_40.p3d","CUP_Railway_rails_bridge_40"],
-	["rails_curve_l25_10.p3d","CUP_Railway_rails_curve_L25_10"],
-	["rails_curve_r25_10.p3d","CUP_Railway_rails_curve_R25_10"],
-	["rails_down_25.p3d","CUP_Railway_rails_down_25"],
-	["rails_down_40.p3d","CUP_Railway_rails_down_40"],
-	["rails_linebreak_concrete.p3d","CUP_Railway_rails_linebreak_concrete"],
-	["rails_linebreak_iron.p3d","CUP_Railway_rails_linebreak_iron"],
-	["rails_passing_10.p3d","CUP_Railway_rails_passing_10"],
-	["rails_passing_25.p3d","CUP_Railway_rails_passing_25"],
-	["rails_turnout_l.p3d","CUP_Railway_rails_turnout_L"],
-	["rails_turnout_r.p3d","CUP_Railway_rails_turnout_R"],
-	["rails_up_25.p3d","CUP_Railway_rails_up_25"],
-	["rails_up_40.p3d","CUP_Railway_rails_up_40"],
-	["rails_v_lb_re.p3d","CUP_Railway_rails_v_LB_RE"],
-	["rails_v_le_rb.p3d","CUP_Railway_rails_v_LE_RB"],
-	["rails_v_sp.p3d","CUP_Railway_rails_v_SP"],
-	["rails_v1_lb_re.p3d","CUP_Railway_rails_v1_LB_RE"],
-	["rails_v1_le_rb.p3d","CUP_Railway_rails_v1_LE_RB"],
-	["railsn_25.p3d","CUP_Railway_railsN_25"],
-	["railsn_40.p3d","CUP_Railway_railsN_40"],
-	["railsn_curve_l25_10.p3d","CUP_Railway_railsN_curve_L25_10"],
-	["railsn_curve_l25_5.p3d","CUP_Railway_railsN_curve_L25_5"],
-	["railsn_curve_l30_20.p3d","CUP_Railway_railsN_curve_L30_20"],
-	["railsn_curve_r25_10.p3d","CUP_Railway_railsN_curve_R25_10"],
-	["railsn_curve_r25_5.p3d","CUP_Railway_railsN_curve_R25_5"],
-	["railsn_curve_r30_20.p3d","CUP_Railway_railsN_curve_R30_20"],
-	["railsn_turnout_l.p3d","CUP_Railway_railsN_turnout_L"],
-	["railsn_turnout_r.p3d","CUP_Railway_railsN_turnout_R"]
+	["railwaycar_01_tank_f.p3d","Land_RailwayCar_01_tank_F"]
 ];
-
-
-
 
 // Returns [Class Name, Is Static]
 ATRAIN_fnc_getTypeOf = {
@@ -453,7 +360,6 @@ ATRAIN_fnc_getTrainDefinition = {
 	_trainDef;
 };
 
-// 1%
 ATRAIN_fnc_addWorldPaths = {
 	PROFILE_START("ATRAIN_fnc_addWorldPaths");
 
@@ -795,7 +701,6 @@ ATRAIN_COUNT = 0;
 ATRAIN_TIME = 0;
 
 ATRAIN_fnc_findConnectedTrackNodes = {
-	PROFILE_START("ATRAIN_fnc_findConnectedTrackNodes");
 	params ["_track",["_sourceConnection",[]]];
 	private _trackWorldPaths = [_track] call ATRAIN_fnc_getTrackWorldPaths;
 	private _connectedTrackNodes = [];
@@ -816,6 +721,8 @@ ATRAIN_fnc_findConnectedTrackNodes = {
 		private _sourceConnectionUsed = false;
 		private _lastCameraPreloadLocation = [0,0,0];
 		
+		// Check to see if the path is heading back in the direction of the path we just followed
+		// If it is, use the source connection path instead of retracing the steps back
 		if(count _sourceConnection > 0) then {
 			private _sourceConnectionPath = _sourceConnection select 1;
 			private _sourceConnectionPathSecondPosition = _sourceConnectionPath select 1;
@@ -823,7 +730,6 @@ ATRAIN_fnc_findConnectedTrackNodes = {
 			if( _sourceConnectionPathSecondPosition distance _currentPathSecondPosition == 0) then {
 				_connectedTrackNodes pushBack _sourceConnection;
 				_sourceConnectionUsed = true;
-				//diag_log str ["SOURCE CONNECTIN USED", _track];
 			};
 		};
 		
@@ -844,7 +750,6 @@ ATRAIN_fnc_findConnectedTrackNodes = {
 			scopeName "ATRAIN_fnc_findConnectedTrackNodes_0";
 			{				
 				if(_x != _lastSeenTrack) then {	
-					//diag_log str ["FOUND TRACK",_x];
 					private _trackDef = [_x] call ATRAIN_fnc_getTrackDefinition;
 					_trackDef params ["_className","_modelPaths","_isSplitTrack","_isEndTrack"];
 					private _trackWorldPath = ([_x] call ATRAIN_fnc_getTrackWorldPaths) select 0;
@@ -853,7 +758,6 @@ ATRAIN_fnc_findConnectedTrackNodes = {
 					};
 					_lastTrackSeen = _x;
 					if(_isSplitTrack || _isEndTrack) then {
-						//diag_log str ["FOUND TRACK GOODBY",_x];
 						private _distanceAdded = [_pathToNode, _trackWorldPath, true] call ATRAIN_fnc_addWorldPaths;
 						private _pathToNodeCount = count _pathToNode;
 						private _lastPathPosASL = _pathToNode select (_pathToNodeCount-1);
@@ -899,7 +803,11 @@ ATRAIN_fnc_findConnectedTrackNodes = {
 			// Track node found or no valid node found ( will search 10m beyond end of track )
 			if(_trackNodeFound || _distanceFromFront < -10) exitWith {};
 
-			_distanceFromFront = _distanceFromFront - 2;
+			if(_distanceFromFront > 0 && !(_lastSeenTrack in ATRAIN_TRACKS_NEAR_EDITOR_PLACED_CONNECTIONS)) then {
+				_distanceFromFront = 0;
+			} else {
+				_distanceFromFront = _distanceFromFront - 1.1;
+			};
 
 		};	
 		
@@ -908,8 +816,6 @@ ATRAIN_fnc_findConnectedTrackNodes = {
 		};
 		
 	} forEach _trackWorldPaths;
-	
-	PROFILE_STOP;
 	_connectedTrackNodes;
 };
 
@@ -983,7 +889,7 @@ CREATE_MARKER = {
 
 ARROWS = [];
 
-	/*
+/*
 player addAction ["Test Track", {
 	
 	_timeStart2 = 0;
@@ -1029,7 +935,7 @@ player addAction ["Test Track", {
 	//_timeEnd = diag_tickTime;
 	//hintSilent str [(_timeEnd - _timeStart),(_timeEnd2 - _timeStart2),ATRAIN_COUNT,ATRAIN_TIME];
 }];
-*/			
+*/
 
 ATRAIN_fnc_getTrackWorldPaths = {
 	params ["_track"];
@@ -1182,10 +1088,7 @@ ATRAIN_fnc_lookupTrackMapPosition = {
 	scopeName "ATRAIN_fnc_lookupTrackMapPosition_0";
 	{
 		if(_x select 0 == _track) then {
-			
-			//diag_log str ["LOOKUP T", _x];
 			if( vectorDir _train vectorDotProduct (_x select 1) > 0 ) then {
-				//diag_log str ["LOOKUP F", _x];
 				_foundTrackLookup = _x;
 				breakTo "ATRAIN_fnc_lookupTrackMapPosition_0";
 			};
@@ -1196,24 +1099,21 @@ ATRAIN_fnc_lookupTrackMapPosition = {
 	
 	if(count _foundTrackLookup > 0) then {
 		_foundTrackLookup params ["_track","_direction","_startNodeIndex","_endNodeIndex"];
-		////diag_log ("Getting ATRAIN_fnc_getTrackMapConnection " + str [_startNodeIndex, _endNodeIndex]);
 		private _connection = [_startNodeIndex, _endNodeIndex] call ATRAIN_fnc_getTrackMapConnection;
-		////diag_log ("Found: " + str _connection);
 		private _connectionDistance = _connection select 1;
 		private _connectionPath = _connection select 2;
 		private _distanceFromStart = 0;
-		private _minDotProduct = 0;
 		private _foundDistanceFromStart = 0;
 		private _lastPathPointPosASL = [];
 		private _trianPositionASL = getPosASL _train;
+		scopeName "ATRAIN_fnc_lookupTrackMapPosition_1";
 		{
 			private _currentPathPointPosASL = _x;
 			if( count _lastPathPointPosASL > 0 ) then {
-				
 				private _positionDotProduct = (_trianPositionASL vectorFromTo _lastPathPointPosASL) vectorDotProduct (_trianPositionASL vectorFromTo _currentPathPointPosASL);
-				if(_forEachIndex == 1 || _positionDotProduct < _minDotProduct) then {
-					_minDotProduct = _positionDotProduct;
-					_foundDistanceFromStart = _distanceFromStart + (_lastPathPointPosASL distance _train);
+				if(_positionDotProduct <= 0) then {
+					_foundDistanceFromStart = _distanceFromStart + (_lastPathPointPosASL distance _trianPositionASL);
+					breakTo "ATRAIN_fnc_lookupTrackMapPosition_1";
 				};
 				_distanceFromStart = _distanceFromStart + (_lastPathPointPosASL distance _currentPathPointPosASL);
 			};
@@ -1412,12 +1312,12 @@ ATRAIN_fnc_hideTrainReplaceWithNew = {
 	};
 	if(isObjectHidden _train) then {
 		if(_newObjectIsGlobal) then {
-			_newTrain = createVehicle [_className, getPosASLVisual _train, [], 0, "CAN_COLLIDE"];
+			_newTrain = createVehicle [_className, ASLToAGL getPosASLVisual _train, [], 0, "CAN_COLLIDE"];
 		} else {
-			_newTrain = _className createVehicleLocal (getPosASLVisual _train);
+			_newTrain = _className createVehicleLocal ASLToAGL (getPosASLVisual _train);
 		};
-		_newTrain setPosASL (getPosASLVisual _train);
 		_newTrain setVectorDirAndUp [vectorDir _train, vectorUp _train];
+		_newTrain setPosASL (getPosASLVisual _train);
 	};
 	_newTrain;
 };
@@ -1678,8 +1578,8 @@ ATRAIN_fnc_passengerMoveInputHandler = {
 ATRAIN_fnc_calculateTrainAlignment = {
 	params ["_trainEngine","_trainCar","_trainDistanceFromFront"];
 	private _carLength = _trainCar getVariable ["ATRAIN_Remote_Car_Length",6];
-	private _carFrontPositionAndDirection = [_trainEngine, _trainCar, _trainDistanceFromFront - (_carLength * 0.3)] call ATRAIN_fnc_getTrainPositionAndDirection;
-	private _carBackPositionAndDirection = [_trainEngine, _trainCar, _trainDistanceFromFront + (_carLength * 0.3)] call ATRAIN_fnc_getTrainPositionAndDirection;
+	private _carFrontPositionAndDirection = [_trainEngine, _trainCar, _trainDistanceFromFront - (_carLength * 0.4)] call ATRAIN_fnc_getTrainPositionAndDirection;
+	private _carBackPositionAndDirection = [_trainEngine, _trainCar, _trainDistanceFromFront + (_carLength * 0.4)] call ATRAIN_fnc_getTrainPositionAndDirection;
 	[_carFrontPositionAndDirection, _carBackPositionAndDirection];
 };
 
@@ -1773,9 +1673,10 @@ ATRAIN_fnc_drawTrain = {
 	private _currentTime = diag_tickTime;
 	private _lastSeen = _train getVariable ["ATRAIN_New_Alignment_Last_Seen",diag_tickTime];
 	private _timeSinceLastSeen = _currentTime - _lastSeen;
-	private _frontCar = _train getVariable ["ATRAIN_Local_Front_Car", _train];
-	private _rearCar = _train getVariable ["ATRAIN_Local_Rear_Car", _train];
 	private _trainSpeed = _train getVariable ["ATRAIN_Local_Velocity",0];
+	
+	private _maxAnimatedCars = missionNamespace getVariable ["ATRAIN_MAX_CARS_SIMULATED_ENABLED", 3];
+	private _carsWithAnimationEnabled = 0;	
 	
 	{
 		private _localCopy = _x getVariable ["ATRAIN_Local_Copy", objNull];
@@ -1798,19 +1699,14 @@ ATRAIN_fnc_drawTrain = {
 		private _animateTrain = _x getVariable ["ATRAIN_Remove_Animate_Train",false];
 		
 		// Enable in-game simulation for front and rear cars (so that it can collide with objects)
-		if(_x == _frontCar || _x == _rearCar || _animateTrain) then {
-			if(_distanceFromLastToNewPosition > 0.01 && (_currentTime - _lastAttachmentTime > 3 || _animateTrain)  ) then {
+		
+		if(_distanceFromLastToNewPosition > 0.01) then {
+			if(_carsWithAnimationEnabled < _maxAnimatedCars) then {
+				_carsWithAnimationEnabled = _carsWithAnimationEnabled + 1;
 				if(!simulationEnabled _localCopy) then {
 					_localCopy enableSimulation true;
-					_localCopy spawn {
-						sleep 2;
-						if(!simulationEnabled _this) then {
-							_this enableSimulation true;
-						};
-					};
 				};
 			} else {
-				// Disable simulation while not moving (because train's position isn't set while not moving)
 				if(simulationEnabled _localCopy) then {
 					_localCopy enableSimulation false;
 				};
@@ -1903,13 +1799,6 @@ ATRAIN_fnc_drawTrain = {
 
 };
 
-["ATRAIN_Frame_Handler", "onEachFrame",{
-	private _registeredTrains = missionNamespace getVariable ["ATRAIN_Registered_Trains",[]];
-	{
-		[_x] call ATRAIN_fnc_drawTrain;
-	} forEach _registeredTrains;
-}] call BIS_fnc_addStackedEventHandler;
-
 ATRAIN_fnc_simulateTrainVelocity = {
 	params ["_train"];
 	private _driver = _train getVariable ["ATRAIN_Remote_Driver", objNull];
@@ -1998,17 +1887,6 @@ ATRAIN_fnc_handleVelocityNetworkUpdates = {
 			_train setVariable ["ATRAIN_Local_Velocity",_trainRemoteVelocity];
 			_train setVariable ["ATRAIN_Remote_Velocity",nil];
 		};
-	};
-};
-
-[] spawn {
-	while {true} do {
-		private _registeredTrains = missionNamespace getVariable ["ATRAIN_Registered_Trains",[]];
-		{
-			[_x] call ATRAIN_fnc_simulateTrainVelocity;
-			[_x] call ATRAIN_fnc_handleVelocityNetworkUpdates;
-		} forEach _registeredTrains;
-		sleep 0.1;
 	};
 };
 
@@ -2102,18 +1980,6 @@ ATRAIN_fnc_simulateTrainAttachment = {
 
 };
 
-[] spawn {
-	while {true} do {
-		private _registeredTrains = missionNamespace getVariable ["ATRAIN_Registered_Trains",[]];
-		{
-			if([_x] call ATRAIN_fnc_isTrainLocal) then {
-				[_x] call ATRAIN_fnc_simulateTrainAttachment;
-			};
-		} forEach _registeredTrains;
-		sleep 0.1;
-	};
-};
-
 ATRAIN_fnc_simulateTrain = {
 	
 	params ["_train"];
@@ -2125,6 +1991,7 @@ ATRAIN_fnc_simulateTrain = {
 	private _lastSimulationTime = _train getVariable ["ATRAIN_Local_Last_Simulation_Time",_currentSimulationTime];
 	_train setVariable ["ATRAIN_Local_Last_Simulation_Time",_currentSimulationTime];
 	private _deltaSimulationTime = _currentSimulationTime - _lastSimulationTime;
+	
 	if(_deltaSimulationTime > 5) then {
 		_deltaSimulationTime = 0;
 	};
@@ -2170,10 +2037,7 @@ ATRAIN_fnc_simulateTrain = {
 		_priorCarLength = _carLength;
 	} forEach _trainCarsInFront;
 	private _distanceFromEngineToFront = (_trainDistanceFromFront - _carDistanceFrontStart) + ( _priorCarLength / 2 );
-	
-	_train setVariable ["ATRAIN_Local_Front_Car", _frontCar];
-	_train setVariable ["ATRAIN_Local_Rear_Car", _rearCar];
-	
+
 	// Calculate track node updates
 	private _nodePath = _train getVariable ["ATRAIN_Local_Node_Path",[]];
 	private _trainNodePathDistance = _train getVariable ["ATRAIN_Local_Node_Path_Distance",0];
@@ -2276,21 +2140,6 @@ ATRAIN_fnc_handleSimulationNetworkUpdates = {
 		};
 	};
 };
-
-[] spawn {
-	while {true} do {
-		private _registeredTrains = missionNamespace getVariable ["ATRAIN_Registered_Trains",[]];
-		{
-			if(_x getVariable ["ATRAIN_Calculations_Queued",true]) then {
-				[_x] call ATRAIN_fnc_simulateTrain;
-				[_x] call ATRAIN_fnc_handleSimulationNetworkUpdates;
-				_x setVariable ["ATRAIN_Calculations_Queued",false];
-			};
-		} forEach _registeredTrains;
-		sleep 0.1;
-	};
-};
-
 
 ATRAIN_fnc_attachToTrainCar = {
 	params ["_object","_trainCar","_attachmentPosition"];
@@ -2430,6 +2279,41 @@ ATRAIN_fnc_isPassengerMoving = {
 	(_player getVariable ["ATRAIN_Passenger_Forward", 0]) + (_player getVariable ["ATRAIN_Passenger_Backward", 0]) + (_player getVariable ["ATRAIN_Passenger_Right", 0]) + (_player getVariable ["ATRAIN_Passenger_Left", 0]) > 0;
 };
 
+ATRAIN_RIDE_ON_TRAIN_EVENT_HANDLER_PARAMS = [];
+
+ATRAIN_fnc_rideOnTrainEventHandler = {
+	ATRAIN_RIDE_ON_TRAIN_EVENT_HANDLER_PARAMS params ["_player","_train"];
+
+	private _remoteTrain = _train getVariable ["ATRAIN_Remote_Copy",_train];
+	private _mainEngine = _remoteTrain getVariable ["ATRIAN_Current_Train", _remoteTrain];
+	
+	private _currentTrainPositionASL = getPosASLVisual _train;
+	private _lastTrainPositionASL = _player getVariable ["ATRAIN_Riding_On_Train_Last_Train_Position_ASL", _currentTrainPositionASL];
+	private _currentTrainDir = getDir _train;
+	private _lastTrainDir = _player getVariable ["ATRAIN_Riding_On_Train_Last_Train_Dir", _currentTrainDir];
+	
+	_player setVariable ["ATRAIN_Riding_On_Train_Last_Train_Position_ASL", _currentTrainPositionASL];
+	_player setVariable ["ATRAIN_Riding_On_Train_Last_Train_Dir", _currentTrainDir];
+	
+	private _isPlayerMoving = [_player] call ATRAIN_fnc_isPassengerMoving;
+	
+	if(_isPlayerMoving) then {	
+		_player setVariable ["ATRAIN_Riding_On_Train_Last_Player_Position_Model", _train worldToModelVisual (ASLToAGL getPosASLVisual vehicle _player) ];
+	};
+	
+	private _lastPlayerPositionModel = _player getVariable ["ATRAIN_Riding_On_Train_Last_Player_Position_Model", _train worldToModelVisual (ASLToAGL getPosASLVisual vehicle _player)];	
+
+	if(_currentTrainPositionASL distance _lastTrainPositionASL > 0) then {
+		
+		if(!_isPlayerMoving) then {	
+			(vehicle _player) setVelocity [0,0,0];
+		};
+		
+		(vehicle _player) setDir (getDir _player + _currentTrainDir - _lastTrainDir);
+		(vehicle _player) setPosASL (AGLtoASL (_train modelToWorldVisual _lastPlayerPositionModel));
+
+	};
+};
 
 ATRAIN_fnc_rideOnTrain = {
 	params ["_player","_train"];
@@ -2441,95 +2325,153 @@ ATRAIN_fnc_rideOnTrain = {
 	
 	player setVariable ["ATRAIN_Riding_On_Train_Last_Player_Position_Model", _train worldToModelVisual (ASLToAGL getPosASLVisual _player) ];
 	
-	["ATRAIN_Ride_Train_Handler", "onEachFrame",{
-		params ["_player","_train"];
-
-		private _remoteTrain = _train getVariable ["ATRAIN_Remote_Copy",_train];
-		private _mainEngine = _remoteTrain getVariable ["ATRIAN_Current_Train", _remoteTrain];
-		
-		private _currentTrainPositionASL = getPosASLVisual _train;
-		private _lastTrainPositionASL = _player getVariable ["ATRAIN_Riding_On_Train_Last_Train_Position_ASL", _currentTrainPositionASL];
-		private _currentTrainDir = getDir _train;
-		private _lastTrainDir = _player getVariable ["ATRAIN_Riding_On_Train_Last_Train_Dir", _currentTrainDir];
-		
-		_player setVariable ["ATRAIN_Riding_On_Train_Last_Train_Position_ASL", _currentTrainPositionASL];
-		_player setVariable ["ATRAIN_Riding_On_Train_Last_Train_Dir", _currentTrainDir];
-		
-		private _isPlayerMoving = [_player] call ATRAIN_fnc_isPassengerMoving;
-		
-		if(_isPlayerMoving) then {	
-			_player setVariable ["ATRAIN_Riding_On_Train_Last_Player_Position_Model", _train worldToModelVisual (ASLToAGL getPosASLVisual vehicle _player) ];
-		};
-		
-		private _lastPlayerPositionModel = _player getVariable ["ATRAIN_Riding_On_Train_Last_Player_Position_Model", _train worldToModelVisual (ASLToAGL getPosASLVisual vehicle _player)];	
-
-		if(_currentTrainPositionASL distance _lastTrainPositionASL > 0) then {
-			
-			if(!_isPlayerMoving) then {	
-				(vehicle _player) setVelocity [0,0,0];
-			};
-			
-			(vehicle _player) setDir (getDir _player + _currentTrainDir - _lastTrainDir);
-			(vehicle _player) setPosASL (AGLtoASL (_train modelToWorldVisual _lastPlayerPositionModel));
-
-		};
-		
-	}, _this] call BIS_fnc_addStackedEventHandler;
+	ATRAIN_RIDE_ON_TRAIN_EVENT_HANDLER_PARAMS = _this;
+	private _rideEventHandlerId = addMissionEventHandler ["EachFrame", {call ATRAIN_fnc_rideOnTrainEventHandler}];
+	
 	while {true} do {
 		private _currentTrain = [_player] call ATRAIN_fnc_getTrainUnderPlayer;
 		private _currentPassengerCar = _player getVariable ["ATRAIN_Current_Train_Passenger_Car",objNull];
 		if(isNull _currentTrain || _currentTrain != _train || !isNull _currentPassengerCar || !alive _player) exitWith {};
 		sleep 0.1;
 	};
-	_player setVariable ["ATRAIN_Riding_On_Train", nil];
-	["ATRAIN_Ride_Train_Handler", "onEachFrame"] call BIS_fnc_removeStackedEventHandler;
+	_player setVariable ["ATRAIN_Riding_On_Train", nil];	
+	removeMissionEventHandler ["EachFrame", _rideEventHandlerId];
 	[] call ATRAIN_fnc_disableTrainPassengerInputHandlers;
 };
 
-if(hasInterface) then {
+ATRAIN_fnc_drawEventHandler = {
+	{
+		[_x] call ATRAIN_fnc_drawTrain;
+	} forEach (missionNamespace getVariable ["ATRAIN_Registered_Trains",[]]);
+};
+
+ATRAIN_TRACKS_NEAR_EDITOR_PLACED_CONNECTIONS = [];
+
+ATRAIN_fnc_preloadAllTracksNearEditorPlacedConnections = {
+	{
+		private _isSplitTrack = _x select 2;
+		private _isEndTrack = _x select 3;
+		private _trackClassName = _x select 0;
+		if(_isSplitTrack || _isEndTrack) then {
+			// Loop over every mission object of that class
+			private _missionTrackObjects = allMissionObjects _trackClassName;
+			{
+				// Loop over every path in the track object
+				private _track = _x;
+				private _trackWorldPaths = [_track] call ATRAIN_fnc_getTrackWorldPaths;
+				{
+					// Find tracks under the track path's end points
+					private _positionASL = _x select 0;
+					private _tracksAtPosition = [_positionASL,_track] call ATRAIN_fnc_getTracksAtPosition;
+					{
+						private _trackType = [_x] call ATRAIN_fnc_getTypeOf;
+						_trackType params ["_className","_isStatic"];
+						if(_isStatic) then {
+							ATRAIN_TRACKS_NEAR_EDITOR_PLACED_CONNECTIONS pushBackUnique _x;
+						};
+					} forEach _tracksAtPosition
+				} forEach _trackWorldPaths;
+			} forEach _missionTrackObjects;
+		};
+	} forEach ATRAIN_Track_Definitions;
+};
+
+ATRAIN_fnc_init = {
+
+	[] call ATRAIN_fnc_preloadAllTracksNearEditorPlacedConnections;
+
+	// Start train drawing handler
+	addMissionEventHandler ["EachFrame", {call ATRAIN_fnc_drawEventHandler}];
+
+	// Start train speed simulation handler
 	[] spawn {
 		while {true} do {
-			private _ridingOnTrain = player getVariable ["ATRAIN_Riding_On_Train", objNull];
-			private _currentPassengerCar = player getVariable ["ATRAIN_Current_Train_Passenger_Car",objNull];
-			if(isNull _ridingOnTrain && isNull _currentPassengerCar) then {
-				if((getPosATL player) select 2 > 0.5) then {
-					private _train = [player] call ATRAIN_fnc_getTrainUnderPlayer;
-					if(!isNull _train) then {
-						player setVariable ["ATRAIN_Riding_On_Train", _train];
-						[player,_train] spawn ATRAIN_fnc_rideOnTrain;
+			private _registeredTrains = missionNamespace getVariable ["ATRAIN_Registered_Trains",[]];
+			{
+				[_x] call ATRAIN_fnc_simulateTrainVelocity;
+				[_x] call ATRAIN_fnc_handleVelocityNetworkUpdates;
+			} forEach _registeredTrains;
+			sleep 0.1;
+		};
+	};
+
+	// Start train attachment simulation handler
+	[] spawn {
+		while {true} do {
+			private _registeredTrains = missionNamespace getVariable ["ATRAIN_Registered_Trains",[]];
+			{
+				if([_x] call ATRAIN_fnc_isTrainLocal) then {
+					[_x] call ATRAIN_fnc_simulateTrainAttachment;
+				};
+			} forEach _registeredTrains;
+			sleep 0.1;
+		};
+	};
+
+	// Start train position simulation handler
+	[] spawn {
+		while {true} do {
+			private _registeredTrains = missionNamespace getVariable ["ATRAIN_Registered_Trains",[]];
+			{
+				if(_x getVariable ["ATRAIN_Calculations_Queued",true]) then {
+					[_x] call ATRAIN_fnc_simulateTrain;
+					[_x] call ATRAIN_fnc_handleSimulationNetworkUpdates;
+					_x setVariable ["ATRAIN_Calculations_Queued",false];
+				};
+			} forEach _registeredTrains;
+			sleep 0.1;
+		};
+	};
+
+	// Start attach player to moving train handler
+	if(hasInterface) then {
+		[] spawn {
+			while {true} do {
+				private _ridingOnTrain = player getVariable ["ATRAIN_Riding_On_Train", objNull];
+				private _currentPassengerCar = player getVariable ["ATRAIN_Current_Train_Passenger_Car",objNull];
+				if(isNull _ridingOnTrain && isNull _currentPassengerCar) then {
+					if((getPosATL player) select 2 > 0.5) then {
+						private _train = [player] call ATRAIN_fnc_getTrainUnderPlayer;
+						if(!isNull _train) then {
+							player setVariable ["ATRAIN_Riding_On_Train", _train];
+							[player,_train] spawn ATRAIN_fnc_rideOnTrain;
+						};
 					};
 				};
+				sleep 0.5;
 			};
-			sleep 0.5;
 		};
 	};
+
+	if(isServer) then {
+		
+		// Adds support for exile network calls (Only used when running exile) //
+
+		ExileServer_AdvancedTrainSimulator_network_AdvancedTrainSimulatorRemoteExecServer = {
+			params ["_sessionId", "_messageParameters",["_isCall",false]];
+			_messageParameters params ["_params","_functionName"];
+			if(_isCall) then {
+				_params call (missionNamespace getVariable [_functionName,{}]);
+			} else {
+				_params spawn (missionNamespace getVariable [_functionName,{}]);
+			};
+		};
+
+		ExileServer_AdvancedTrainSimulator_network_AdvancedTrainSimulatorRemoteExecClient = {
+			params ["_sessionId", "_messageParameters"];
+			_messageParameters params ["_params","_functionName","_target",["_isCall",false]];
+			if(_isCall) then {
+				_params remoteExecCall [_functionName, _target];
+			} else {
+				_params remoteExec [_functionName, _target];
+			};
+		};
+		
+	};
+
 };
 
-if(isServer) then {
-	
-	// Adds support for exile network calls (Only used when running exile) //
-
-	ExileServer_AdvancedTrainSimulator_network_AdvancedTrainSimulatorRemoteExecServer = {
-		params ["_sessionId", "_messageParameters",["_isCall",false]];
-		_messageParameters params ["_params","_functionName"];
-		if(_isCall) then {
-			_params call (missionNamespace getVariable [_functionName,{}]);
-		} else {
-			_params spawn (missionNamespace getVariable [_functionName,{}]);
-		};
-	};
-
-	ExileServer_AdvancedTrainSimulator_network_AdvancedTrainSimulatorRemoteExecClient = {
-		params ["_sessionId", "_messageParameters"];
-		_messageParameters params ["_params","_functionName","_target",["_isCall",false]];
-		if(_isCall) then {
-			_params remoteExecCall [_functionName, _target];
-		} else {
-			_params remoteExec [_functionName, _target];
-		};
-	};
-	
-};
+[] call ATRAIN_fnc_init;
 
 diag_log "Advanced Train Simulator (ATS) Loaded";
 
