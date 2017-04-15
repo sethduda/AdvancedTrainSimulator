@@ -23,8 +23,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #define ATRAIN_MAP_DISPLAY (findDisplay 12)
 #define ATRAIN_MAIN_DISPLAY (findDisplay 46)
 
-
-#define PROFILE_START(METHOD_NAME) 
+#define PROFILE_START
 #define PROFILE_STOP
 #define PROFILE_START2(METHOD_NAME) [METHOD_NAME,diag_tickTime] call ATRAIN_fnc_profileMethodStart
 #define PROFILE_STOP2 [diag_tickTime] call ATRAIN_fnc_profileMethodStop
@@ -256,65 +255,175 @@ ATRAIN_fnc_getTrainAtPosition = {
 	_foundTrain;
 };
 
+ATRAIN_Track_Definitions_Index = [];
+
 // [Class Name, Center Point Offset, Is Split Track, Is End Track,Memory Point Height Offset]
 ATRAIN_Track_Definitions = [ 
- ["Land_Track_01_3m_F",0,false,false], 
- ["Land_Track_01_7deg_F",0.15,false,false], 
- ["Land_Track_01_10m_F",0,false,false], 
- ["Land_Track_01_15deg_F",0.3,false,false], 
- ["Land_Track_01_20m_F",0,false,false], 
- ["Land_Track_01_30deg_F",0.6,false,false], 
- ["Land_Track_01_bridge_F",0,false,false], 
- ["Land_Track_01_bumper_F",0,false,true], 
- ["Land_Track_01_turnout_left_F",0.55,true,false], 
- ["Land_Track_01_turnout_right_F",-0.55,true,false],
- ["Land_straight40",0,false,false,0.06],
- ["Land_straight25",0,false,false,0.06],
- ["Land_left_turn",1,true,false,0.06],
- ["Land_right_turn",-1,true,false,0.06],
- ["Land_curveL25",0.3,false,false,0.06],
- ["Land_Bridge",0,false,false,0.06],
- ["Land_terminator_concrete",0,false,true,0.06],
- ["Land_straight_down40",0,false,false,0.06]
+	["Land_Track_01_3m_F",0,false,false], 
+	["Land_Track_01_7deg_F",0.15,false,false], 
+	["Land_Track_01_10m_F",0,false,false], 
+	["Land_Track_01_15deg_F",0.3,false,false], 
+	["Land_Track_01_20m_F",0,false,false], 
+	["Land_Track_01_30deg_F",0.6,false,false], 
+	["Land_Track_01_bridge_F",0,false,false], 
+	["Land_Track_01_bumper_F",0,false,true], 
+	["Land_Track_01_turnout_left_F",0.55,true,false], 
+	["Land_Track_01_turnout_right_F",-0.55,true,false], 
+	["ATS_Tracks_Cable_Wire",0,false,false], 
+	["ATS_Tracks_Cable_Wire_50",0,false,false], 
+	["ATS_Tracks_Cable_Wire_Stop",0,false,true],
+	["ATS_Tracks_Cable_Pole",0,false,false],
+	// Test Tracks Below
+	["Land_straight40",0,false,false,0.06],
+	["Land_left_turn",1,true,false,0.06],
+	["Land_right_turn",-1,true,false,0.06],
+	["Land_straight25",0,false,false,0.06],
+	["Land_Bridge",0,false,false,0.06],
+	["Land_terminator_concrete",0,false,true,0.06],
+	["Land_straight_down40",0,false,false,0.06],
+	["Land_stonebridge",0,false,false,0.06],
+	["Land_Bridgehalf",0,false,false,0.06],
+	["Land_road_xing_25",0,false,false,0.06],
+	["Land_xroad_10",0,false,false,0.06],
+	["Land_xroad_25",0,false,false,0.06],
+	["Land_curveR25_5",0.3,false,false,0.06],
+	["Land_curveL30_20",0.3,false,false,0.06],
+	["Land_curveL25_10",0.3,false,false,0.06],
+	["Land_curveL25_5",0.3,false,false,0.06]
 ];
 
-// [Class Name, Is Drivable, Is Rideable, Length In Meters, Model Position Offset, Animate Train ]
+ATRAIN_Train_Definitions_Index = [];
+
+// [Class Name, Is Drivable, Is Rideable, Length In Meters, Model Position Offset, Animate Train, Is Direction Reversed, Particle Effects, Is Cable Car]
 ATRAIN_Train_Definitions = [
-	["Land_Locomotive_01_v1_F", true, false, 5.3, 12, [0,0,0.052],true],
-	["Land_Locomotive_01_v2_F", true, false, 5.3, 12, [0,0,0.052],true],
-	["Land_Locomotive_01_v3_F", true, false, 5.3, 12, [0,0,0.052],true],
-	["Land_RailwayCar_01_passenger_F", false, true, 5.5, 12, [0,0,0.06],true],
-	["Land_RailwayCar_01_sugarcane_empty_F", false, true, 3.2, 12, [0,0,0.052],true],
-	["Land_RailwayCar_01_sugarcane_F", false, true, 3.2, 12, [0,0,0.052],true],
-	["Land_RailwayCar_01_tank_F", false, true, 5.5, 12, [0,0,0.08],true],
-	["Land_loco_742_blue", true, false, 13.5, 19.4, [0,0.05,-0.14],false],
-	["Land_loco_742_red", true, false, 13.5, 19.4, [0,0.05,-0.14],false],
-	["Land_wagon_box", false, true, 12, 19.4, [0,-0.43,0.02],false],
-	["Land_wagon_flat", false, true, 17.1, 19.4, [0,-0.02,0.04],false],
-	["Land_wagon_tanker", false, true, 11.5, 19.4, [0,-0.05,0.02],false],
-	["Land_blue_loco", true, false, 13.5, 19.4,  [0,0.05,-0.14],false],
-	["Land_red_loco", true, false, 13.5, 19.4,  [0,0.05,-0.14],false]
+	["Land_Locomotive_01_v1_F", true, false, 5.3, 12, [0,0,0.052],true,false, [], false],
+	["Land_Locomotive_01_v2_F", true, false, 5.3, 12, [0,0,0.052],true,false, [], false],
+	["Land_Locomotive_01_v3_F", true, false, 5.3, 12, [0,0,0.052],true,false, [], false],
+	["Land_RailwayCar_01_passenger_F", false, true, 5.5, 12, [0,0,0.06],true,false, [], false],
+	["Land_RailwayCar_01_sugarcane_empty_F", false, true, 3.2, 12, [0,0,0.052],true,false, [], false],
+	["Land_RailwayCar_01_sugarcane_F", false, true, 3.2, 12, [0,0,0.052],true,false, [], false],
+	["Land_RailwayCar_01_tank_F", false, true, 5.5, 12, [0,0,0.08],true,false, [], false],
+	["Land_loco_742_blue", true, false, 13.5, 19.4, [0,0.05,-0.14],false,false, [], false],
+	["Land_loco_742_red", true, false, 13.5, 19.4, [0,0.05,-0.14],false,false, [], false],
+	["Land_wagon_box", false, true, 12, 19.4, [0,-0.43,0.02],false,false, [], false],
+	["Land_wagon_flat", false, true, 17.1, 19.4, [0,-0.02,0.04],false,false, [], false],
+	["Land_wagon_tanker", false, true, 11.5, 19.4, [0,-0.05,0.02],false,false, [], false],
+	["ATS_Trains_Steam_Small", true, false, 12, 19.4,  [0,0,0],false,false, [["steam","steam"]], false ],
+	["ATS_Trains_Steam_Large", true, false, 12.5, 19.4,  [0,0,0],false,false, [["steam","steam"]], false ],
+	["ATS_Trains_Cable_Car", true, true, 2, 8, [0,0,-7.32],true,false, [], true],
+	["ATS_Trains_AE_Engine", true, false, 19.6, 40,  [0,0,0],false,false, [], false ], 
+	["ATS_Trains_AE_Wagon", false, true, 24, 40,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_SD60_Engine", true, false, 20, 31.1,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_SD60_Flatbed", false, true, 17.25, 31.1,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_SD60_Oil_Tank", false, true, 17.5, 31.1,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_SD60_Open_Wagon", false, true, 16, 31.1,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_SD60_Covered_Wagon", false, true, 18, 31.1,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_SD60_Covered_Wagon_Black", false, true, 18, 31.1,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_SD60_Covered_Wagon_Blue", false, true, 18, 31.1,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_SD60_Covered_Wagon_Green", false, true, 18, 31.1,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_SD60_Covered_Wagon_Grey", false, true, 18, 31.1,  [0,0,0],false,false, [], false ],
+	["ATS_Trains_VL_Elgolova", true, true, 18.8, 19.4, [0,0,0],false,false, [], false],
+	["ATS_Trains_VL_EW", true, true, 18.8, 19.4, [0,0,0],false,false, [], false],
+	["ATS_Trains_VL_EE", true, true, 18.8, 19.4, [0,0,0],false,false, [], false],
+	["ATS_Trains_VL_M62", true, true, 17.35, 19.4, [0,0,0],false,false, [], false],
+	["ATS_Trains_VL_Vl10", true, true, 20.9, 19.4, [0,0,0],false,false, [], false],
+	["ATS_Trains_VL_TVZ", true, true, 23.5, 19.4, [0,0,0],false,false, [], false],
+	["ATS_Trains_VL_CH4", true, true, 19.5, 19.4, [0,0,0],false,false, [], false],
+	["ATS_Trains_VL_CI", true, true, 12, 19.4, [0,0,0],false,false, [], false],
+	// Test Trains Below
+	["Land_wagon_flat_dozer", false, true, 17.1, 19.4, [0,-0.02,0.04],false,false, [], false],
+	["Land_wagon_flat_container01", false, true, 17.1, 19.4, [0,-0.02,0.04],false,false, [], false],
+	["Land_wagon_flat_container02", false, true, 17.1, 19.4, [0,-0.02,0.04],false,false, [], false],
+	["Land_wagon_flat_container03", false, true, 17.1, 19.4, [0,-0.02,0.04],false,false, [], false],
+	["Land_wagon_flat_excavator", false, true, 17.1, 19.4, [0,-0.02,0.04],false,false, [], false],
+	["Land_wagon_flat_lav", false, true, 17.1, 19.4, [0,-0.02,0.04],false,false, [], false],
+	["Land_wagon_flat_lumber", false, true, 17.1, 19.4, [0,-0.02,0.04],false,false, [], false],	
+	["Land_blue_loco", true, false, 13.5, 19.4,  [0,0.05,-0.14],false,false, [], false],
+	["Land_red_loco", true, false, 13.5, 19.4,  [0,0.05,-0.14],false,false, [], false],
+	["ATS_A2Wagon_Box", false, true, 12, 19.4, [0,-0.43,0.02],false,false, [], false],
+	["ATS_A2Wagon_Flat", false, true, 17.1, 19.4, [0,-0.02,0.04],false,false, [], false],
+	["ATS_A2Wagon_Tanker", false, true, 11.5, 19.4, [0,-0.05,0.02],false,false, [], false]
 ];
+
+ATRAIN_Object_Model_To_Type_Map_Index = [];
 
 ATRAIN_Object_Model_To_Type_Map = [
-	["track_01_3m_f.p3d","Land_Track_01_3m_F"],
-	["track_01_7deg_f.p3d","Land_Track_01_7deg_F"],
-	["track_01_10m_f.p3d","Land_Track_01_10m_F"],
-	["track_01_15deg_f.p3d","Land_Track_01_15deg_F"],
-	["track_01_20m_f.p3d","Land_Track_01_20m_F"],
-	["track_01_30deg_f.p3d","Land_Track_01_30deg_F"],
-	["track_01_bridge_f.p3d","Land_Track_01_bridge_F"],
-	["track_01_bumper_f.p3d","Land_Track_01_bumper_F"],
-	["track_01_turnout_left_f.p3d","Land_Track_01_turnout_left_F"],
-	["track_01_turnout_right_f.p3d","Land_Track_01_turnout_right_F"],
-	["locomotive_01_v1_f.p3d","Land_Locomotive_01_v1_F"],
-	["locomotive_01_v2_f.p3d","Land_Locomotive_01_v2_F"],
-	["locomotive_01_v3_f.p3d","Land_Locomotive_01_v3_F"],
-	["railwaycar_01_passenger_f.p3d","Land_RailwayCar_01_passenger_F"],
-	["railwaycar_01_sugarcane_empty_f.p3d","Land_RailwayCar_01_sugarcane_empty_F"],
-	["railwaycar_01_sugarcane_f.p3d","Land_RailwayCar_01_sugarcane_F"],
-	["railwaycar_01_tank_f.p3d","Land_RailwayCar_01_tank_F"]
+	["track_01_3m_f.p3d",["Land_Track_01_3m_F",true]],
+	["track_01_7deg_f.p3d",["Land_Track_01_7deg_F",true]],
+	["track_01_10m_f.p3d",["Land_Track_01_10m_F",true]],
+	["track_01_15deg_f.p3d",["Land_Track_01_15deg_F",true]],
+	["track_01_20m_f.p3d",["Land_Track_01_20m_F",true]],
+	["track_01_30deg_f.p3d",["Land_Track_01_30deg_F",true]],
+	["track_01_bridge_f.p3d",["Land_Track_01_bridge_F",true]],
+	["track_01_bumper_f.p3d",["Land_Track_01_bumper_F",true]],
+	["track_01_turnout_left_f.p3d",["Land_Track_01_turnout_left_F",true]],
+	["track_01_turnout_right_f.p3d",["Land_Track_01_turnout_right_F",true]],
+	["locomotive_01_v1_f.p3d",["Land_Locomotive_01_v1_F",true]],
+	["locomotive_01_v2_f.p3d",["Land_Locomotive_01_v2_F",true]],
+	["locomotive_01_v3_f.p3d",["Land_Locomotive_01_v3_F",true]],
+	["railwaycar_01_passenger_f.p3d",["Land_RailwayCar_01_passenger_F",true]],
+	["railwaycar_01_sugarcane_empty_f.p3d",["Land_RailwayCar_01_sugarcane_empty_F",true]],
+	["railwaycar_01_sugarcane_f.p3d",["Land_RailwayCar_01_sugarcane_F",true]],
+	["railwaycar_01_tank_f.p3d",["Land_RailwayCar_01_tank_F",true]],
+	["ats_tracks_cable_wire.p3d",["ATS_Tracks_Cable_Wire",true]],
+	["ats_tracks_cable_wire_50.p3d",["ATS_Tracks_Cable_Wire_50",true]],
+	["ats_tracks_cable_wire_stop.p3d",["ATS_Tracks_Cable_Wire_Stop",true]],
+	["ats_trains_steam_small.p3d",["ATS_Trains_Steam_Small",true]],
+	["ats_trains_steam_large.p3d",["ATS_Trains_Steam_Large",true]],
+	["ats_trains_cable_car.p3d",["ATS_Trains_Cable_Car",true]],
+	["ats_trains_sd60_engine.p3d",["ATS_Trains_SD60_Engine",true]],
+	["ats_trains_sd60_flatbed.p3d",["ATS_Trains_SD60_Flatbed",true]],
+	["ats_trains_sd60_oil_tank.p3d",["ATS_Trains_SD60_Oil_Tank",true]],
+	["ats_trains_sd60_open_wagon.p3d",["ATS_Trains_SD60_Open_Wagon",true]],
+	["ats_trains_sd60_covered_wagon.p3d",["ATS_Trains_SD60_Covered_Wagon",true]],
+	["ats_trains_sd60_covered_wagon_black.p3d",["ATS_Trains_SD60_Covered_Wagon_Black",true]],
+	["ats_trains_sd60_covered_wagon_blue.p3d",["ATS_Trains_SD60_Covered_Wagon_Blue",true]],
+	["ats_trains_sd60_covered_wagon_green.p3d",["ATS_Trains_SD60_Covered_Wagon_Green",true]],
+	["ats_trains_sd60_covered_wagon_grey.p3d",["ATS_Trains_SD60_Covered_Wagon_Grey",true]],
+	["ats_trains_ae_engine.p3d",["ATS_Trains_AE_Engine",true]],
+	["ats_trains_ae_wagon.p3d",["ATS_Trains_AE_Wagon",true]],
+	["ats_tracks_cable_pole.p3d",["ATS_Tracks_Cable_Pole",true]],
+	// Test Objects Below
+	["blue_loco.p3d",["Land_blue_loco",true]],
+	["red_loco.p3d",["Land_red_loco",true]],
+	["wagon_box.p3d",["ATS_A2Wagon_Box",true]],
+	["wagon_flat.p3d",["ATS_A2Wagon_Flat",true]],
+	["wagon_tanker.p3d",["ATS_A2Wagon_Tanker",true]],
+	["straight40.p3d",["Land_straight40",true]],
+	["right_turn.p3d",["Land_left_turn",true]],
+	["right_turn.p3d",["Land_right_turn",true]],
+	["straight25.p3d",["Land_straight25",true]],
+	["Bridge.p3d",["Land_Bridge",true]],
+	["straight_down40.p3d",["Land_terminator_concrete",true]],
+	["terminator_concrete.p3d",["Land_straight_down40",true]],
+	["stonebridge.p3d",["Land_stonebridge",true]],
+	["Bridgehalf.p3d",["Land_Bridgehalf",true]],
+	["road_xing_25.p3d",["Land_road_xing_25",true]],
+	["xroad_10.p3d",["Land_xroad_10",true]],
+	["xroad_25.p3d",["Land_xroad_25",true]],
+	["curveR25_5.p3d",["Land_curveR25_5",true]],
+	["curveL30_20.p3d",["Land_curveL30_20",true]],
+	["curveL25_10.p3d",["Land_curveL25_10",true]],
+	["curveL25_5.p3d",["Land_curveL25_5",true]]
 ];
+
+
+
+
+ATRAIN_fnc_rebuildArrayLookupIndexes = {
+	ATRAIN_Track_Definitions_Index = [];
+	{
+		ATRAIN_Track_Definitions_Index pushBack (toLower (_x select 0));
+	} forEach ATRAIN_Track_Definitions;
+	ATRAIN_Train_Definitions_Index = [];
+	{
+		ATRAIN_Train_Definitions_Index pushBack (toLower (_x select 0));
+	} forEach ATRAIN_Train_Definitions;
+	ATRAIN_Object_Model_To_Type_Map_Index = [];
+	{
+		ATRAIN_Object_Model_To_Type_Map_Index pushBack (toLower (_x select 0));
+	} forEach ATRAIN_Object_Model_To_Type_Map;
+};
 
 // Returns [Class Name, Is Static]
 ATRAIN_fnc_getTypeOf = {
@@ -322,26 +431,24 @@ ATRAIN_fnc_getTypeOf = {
 	params ["_object"];
 	private _typeOfArray = [typeOf _object,false];
 	if( (_typeOfArray select 0) != "" ) exitWith { PROFILE_STOP; _typeOfArray };
-	private _objectString = str _object;
-	{
-		if( (_objectString find (_x select 0)) > 0 ) exitWith {
-			_typeOfArray = [_x select 1,true];
-		};
-	} forEach ATRAIN_Object_Model_To_Type_Map;
+	private _modelName = ((str _object) splitString ": ") param [1, ""];
+	private _modelToTypeMapIndex = ATRAIN_Object_Model_To_Type_Map_Index find (toLower _modelName);
+	if(_modelToTypeMapIndex >= 0) then {
+		_typeOfArray = (ATRAIN_Object_Model_To_Type_Map select _modelToTypeMapIndex) select 1;
+	};
 	PROFILE_STOP;
 	_typeOfArray;
 };
 
 ATRAIN_fnc_getTrackDefinition = {
-	PROFILE_START("ATRAIN_fnc_getTrackDefinition");
+	PROFILE_START("ATRAIN_fnc_getTrackDefinition2");
 	params ["_track"];
-	private _trackDef = [];
 	private _trackType = [_track] call ATRAIN_fnc_getTypeOf;
-	{
-		if((_trackType select 0) == (_x select 0)) exitWith {
-			_trackDef = _x;
-		};
-	} forEach ATRAIN_Track_Definitions;
+	private _trackDef = [];
+	private _trackDefIndex = ATRAIN_Track_Definitions_Index find toLower (_trackType select 0);
+	if(_trackDefIndex >= 0) then {
+		_trackDef = ATRAIN_Track_Definitions select _trackDefIndex;
+	};
 	PROFILE_STOP;
 	_trackDef;
 };
@@ -351,11 +458,10 @@ ATRAIN_fnc_getTrainDefinition = {
 	params ["_train"];
 	private _trainDef = [];
 	private _trainType = [_train] call ATRAIN_fnc_getTypeOf;
-	{
-		if((_trainType select 0) == (_x select 0)) exitWith {
-			_trainDef = _x;
-		};
-	} forEach ATRAIN_Train_Definitions;
+	private _trainDefIndex = ATRAIN_Train_Definitions_Index find toLower (_trainType select 0);
+	if(_trainDefIndex >= 0) then {
+		_trainDef = ATRAIN_Train_Definitions select _trainDefIndex;
+	};
 	PROFILE_STOP;
 	_trainDef;
 };
@@ -485,9 +591,14 @@ ATRAIN_fnc_getProfile = {
 	[_profileIndex,_profile];
 };
 
+ATRAIN_fnc_resetProfile = {
+	ATRAIN_Method_Stack = [];
+	ATRAIN_Profiles = [];
+};
+
 ATRAIN_fnc_printProfiles = {
 	{
-		////diag_log str _x;
+		diag_log str _x;
 	} forEach ATRAIN_Profiles;
 };
 
@@ -701,6 +812,7 @@ ATRAIN_COUNT = 0;
 ATRAIN_TIME = 0;
 
 ATRAIN_fnc_findConnectedTrackNodes = {
+	PROFILE_START("ATRAIN_fnc_findConnectedTrackNodes");
 	params ["_track",["_sourceConnection",[]]];
 	private _trackWorldPaths = [_track] call ATRAIN_fnc_getTrackWorldPaths;
 	private _connectedTrackNodes = [];
@@ -816,12 +928,12 @@ ATRAIN_fnc_findConnectedTrackNodes = {
 		};
 		
 	} forEach _trackWorldPaths;
+	PROFILE_STOP;
 	_connectedTrackNodes;
 };
 
 ATRAIN_fnc_buildTrackMap = {
 	PROFILE_START("ATRAIN_fnc_buildTrackMap");
-	PROFILE_START2("ATRAIN_fnc_buildTrackMap");
 	params ["_track"];
 	private _startNodes = [_track] call ATRAIN_fnc_findConnectedTrackNodes;
 	if(count _startNodes == 0) exitWith {PROFILE_STOP; []};
@@ -861,7 +973,6 @@ ATRAIN_fnc_buildTrackMap = {
 		};
 	};
 	PROFILE_STOP;
-	PROFILE_STOP2;
 	_nodeMap;
 };
 
@@ -938,6 +1049,7 @@ player addAction ["Test Track", {
 */
 
 ATRAIN_fnc_getTrackWorldPaths = {
+	PROFILE_START("ATRAIN_fnc_getTrackWorldPaths");
 	params ["_track"];
 	private _trackDef = [_track] call ATRAIN_fnc_getTrackDefinition;
 	if(count _trackDef == 0) exitWith {PROFILE_STOP; [];};
@@ -948,15 +1060,26 @@ ATRAIN_fnc_getTrackWorldPaths = {
 	_map2 = _map2 vectorAdd [0,0,_heightOffset];
 	private _map3 = _track selectionPosition "map3";
 	_map3 = _map3 vectorAdd [0,0,_heightOffset];
+
 	private _trackWorldPaths = [];
 
 	if(!_isIntersection && !_isTermination) then {
 		private _worldPath = [];
 		_worldPath pushBack (AGLtoASL (_track modelToWorld (_map1)));
-		if(_centerOffset != 0) then {
-			private _pathMidpoint = _map1 vectorAdd ((_map2 vectorDiff _map1) vectorMultiply 0.5);
-			_pathMidpoint = _pathMidpoint vectorAdd (((vectorUp _track) vectorCrossProduct (_map1 vectorFromTo _map2)) vectorMultiply _centerOffset);
-			_worldPath pushBack (AGLtoASL (_track modelToWorld (_pathMidpoint)));
+		private _trackPosition = _track selectionPosition "track1";
+		if(_trackPosition distance [0,0,0] != 0) then {
+			private _trackIndex = 1;
+			while {_trackPosition distance [0,0,0] != 0} do {
+				_worldPath pushBack (AGLtoASL (_track modelToWorld (_trackPosition)));
+				_trackIndex = _trackIndex + 1;
+				_trackPosition = _track selectionPosition (format ["track%1", _trackIndex]);
+			};
+		} else {		
+			if(_centerOffset != 0) then {
+				private _pathMidpoint = _map1 vectorAdd ((_map2 vectorDiff _map1) vectorMultiply 0.5);
+				_pathMidpoint = _pathMidpoint vectorAdd (((vectorUp _track) vectorCrossProduct (_map1 vectorFromTo _map2)) vectorMultiply _centerOffset);
+				_worldPath pushBack (AGLtoASL (_track modelToWorld (_pathMidpoint)));
+			};
 		};
 		_worldPath pushBack (AGLtoASL (_track modelToWorld (_map2)));
 		_trackWorldPaths pushBack _worldPath;
@@ -980,6 +1103,7 @@ ATRAIN_fnc_getTrackWorldPaths = {
 		_worldPath pushBack (AGLtoASL (_track modelToWorld (_pathMidpoint)));
 		_trackWorldPaths pushBack _worldPath;
 	};
+	PROFILE_STOP;
 	_trackWorldPaths;
 };
 
@@ -1014,6 +1138,8 @@ ATRAIN_fnc_getTrackUnderTrain = {
 	params ["_train"];
 	private _trainPositionASL = getPosASLVisual _train;
 	private _trainVectorDir = vectorDir _train;
+	private _offset = _train getVariable ["ATRAIN_Remote_Position_Offset",[0,0,0]];
+	_trainPositionASL = _trainPositionASL vectorAdd (_offset vectorMultiply -1);
 	private _tracks = [_trainPositionASL,_train,_trainVectorDir] call ATRAIN_fnc_getTracksAtPosition;
 	private _foundTrack = objNull;
 	if(count _tracks > 0) then {
@@ -1232,7 +1358,7 @@ ATRAIN_fnc_serverEventHandlerLoop = {
 						//diag_log str ["TRACK",_track];
 						if(isNull _track) exitWith {};
 						["Loading Advanced Train Simulator (ATS)",0,0,99,2,0,3000] spawn bis_fnc_dynamicText;
-						private _trackMap = [_track] call ATRAIN_fnc_buildTrackMap;				
+						private _trackMap = [_track] call ATRAIN_fnc_buildTrackMap;
 						[_trackMap] call ATRAIN_fnc_updateTrackMap;
 						[_train, _driver] call ATRAIN_fnc_registerTrainAndDriver;
 						["",0,0,1,0,0,3000] spawn bis_fnc_dynamicText;
@@ -1330,11 +1456,14 @@ ATRAIN_fnc_initTrainObject = {
 		_train = [_train] call ATRAIN_fnc_hideTrainReplaceWithNew;
 	};
 	private _trainDef = [_train] call ATRAIN_fnc_getTrainDefinition;
-	_trainDef params ["_className", "_isDrivable", "_isRideable", "_carLength", "_maxSpeed", "_positionOffset","_animateTrain"];
+	_trainDef params ["_className", "_isDrivable", "_isRideable", "_carLength", "_maxSpeed", "_positionOffset","_animateTrain", "_isModelReversed", "_particleEffects", "_isCableCar"];
 	_train setVariable ["ATRAIN_Remote_Car_Length",_carLength,true];
 	_train setVariable ["ATRAIN_Remote_Train_Max_Velocity",_maxSpeed,true];
 	_train setVariable ["ATRAIN_Remote_Position_Offset",_positionOffset,true];
-	_train setVariable ["ATRAIN_Remove_Animate_Train",_animateTrain,true];
+	_train setVariable ["ATRAIN_Remote_Animate_Train",_animateTrain,true];
+	_train setVariable ["ATRAIN_Remote_Is_Model_Reversed",_isModelReversed,true];
+	_train setVariable ["ATRAIN_Remote_Particle_Effects",_particleEffects,true];
+	_train setVariable ["ATRAIN_Remote_Is_Cable_Car",_isCableCar,true];
 	_train enableSimulation false;
 	_train;
 };
@@ -1644,6 +1773,75 @@ ATRAIN_fnc_cleanUpNodePath = {
 	_train setVariable ["ATRAIN_Local_Distance_From_Front",_trainDistanceFromStart];
 };
 
+ATRAIN_fnc_simulateTrainParticleEffects = {
+	params ["_train"];
+	private _trainSpeed = _train getVariable ["ATRAIN_Local_Velocity",0];
+	private _trainCars = _train getVariable ["ATRAIN_Remote_Cars",[_train]];
+	{
+		private _trainCar = _x;
+		private _particleEffects = _trainCar getVariable ["ATRAIN_Remote_Particle_Effects",[]];
+		private _particleSourcs = _trainCar getVariable ["ATRAIN_Local_Particle_Sources",[]];
+		private _localCopy = _trainCar getVariable ["ATRAIN_Local_Copy", objNull];
+		if(!isNull _localCopy) then {
+			if(_trainSpeed == 0 && count _particleSourcs > 0) then {
+				{
+					deleteVehicle _x;
+				} forEach _particleSourcs;
+				_trainCar setVariable ["ATRAIN_Local_Particle_Sources",nil];
+			};
+			if(_trainSpeed != 0 && count _particleSourcs == 0) then {
+				{
+					_x params ["_particleType","_modelPosition"];
+					if(typeName _modelPosition == "STRING") then {
+						_modelPosition = _localCopy selectionPosition [_modelPosition, "Memory"];
+					};
+					
+					if(_particleType == "steam") then {
+						private _source = "#particlesource" createVehicleLocal (_localCopy modelToWorld _modelPosition);
+												
+						_source setParticleParams    
+							[["\A3\data_f\ParticleEffects\Universal\smoke.p3d",1,0,1,0],"",    
+							"billboard",    
+							0,    
+							1,    
+							_modelPosition,    
+							[0, 0, 2],    
+							3,1.35,1,-0.1,    
+							[0.5, 2],    
+							[[1,1,1,0.25], [1,1,1,0.5], [1,1,1,0]],    
+							[2,2],    
+							0.1,    
+							0.08,    
+							"",    
+							"",    
+							_localCopy,
+							0,    
+							false,    
+							0,    
+							[[0,0,0,0]]];    
+							 
+						 _source setParticleRandom  
+							[2,  
+							[0,0,0.1],  
+							[0,0,0.2],  
+							1,  
+							0.2,  
+							[0.25,0.25,0.25,1],  
+							0.01,  
+							0.03,  
+							10];    
+							 
+						_source setDropInterval 0.001;
+						
+						_particleSourcs pushBack _source;
+					};
+				} forEach _particleEffects;
+				_trainCar setVariable ["ATRAIN_Local_Particle_Sources",_particleSourcs];
+			};
+		};
+	} forEach _trainCars;
+};
+
 ATRAIN_fnc_setWheelSpeed = {
 	params ["_trainCar","_speed","_isBackwards"];
 	private _isLocalCopy = _trainCar getVariable ["ATRAIN_Is_Local_Copy",false];
@@ -1696,7 +1894,8 @@ ATRAIN_fnc_drawTrain = {
 		private _velocityFromLastToNewPosition = _x getVariable ["ATRAIN_Velocity_From_Last_To_New_Position",0];
 		private _directionFromLastToNewPosition = _x getVariable ["ATRAIN_Direction_From_Last_To_New_Position",_lastDrawDirection];
 		private _distanceFromLastToNewPosition = _x getVariable ["ATRAIN_Distance_From_Last_To_New_Position", 0];
-		private _animateTrain = _x getVariable ["ATRAIN_Remove_Animate_Train",false];
+		private _animateTrain = _x getVariable ["ATRAIN_Remote_Animate_Train",false];
+		private _isCableCar = _x getVariable ["ATRAIN_Remote_Is_Cable_Car",false];
 		
 		// Enable in-game simulation for front and rear cars (so that it can collide with objects)
 		
@@ -1726,6 +1925,10 @@ ATRAIN_fnc_drawTrain = {
 			_percentMovedFromLastPosition = (_percentMovedFromLastPosition max 0) min 1;
 			private _currentDrawDirection = vectorNormalized ((_lastDrawDirection vectorMultiply (1-_percentMovedFromLastPosition)) vectorAdd (_newDrawDirection vectorMultiply _percentMovedFromLastPosition));
 			private _currentDrawPosition = _lastDrawPosition vectorAdd (_directionFromLastToNewPosition vectorMultiply (_distanceMovedFromLastPosition min _distanceFromLastToNewPosition));
+			
+			if(_isCableCar) then {
+				_currentDrawDirection set [2,0];
+			};
 			
 			_localCopy setVectorDirAndUp [_currentDrawDirection,[0,0,1]];
 			_localCopy setPosASL _currentDrawPosition;
@@ -1765,7 +1968,7 @@ ATRAIN_fnc_drawTrain = {
 				private _trainVectorDirection = _rearAlignmentPointPosition vectorFromTo _frontAlignmentPointPosition;
 				private _trainPosition = _frontAlignmentPointPosition vectorAdd ((_rearAlignmentPointPosition vectorDiff _frontAlignmentPointPosition) vectorMultiply 0.5);
 				private _trainIsBackwards = _x getVariable ["ATRIAN_Remote_Is_Backwards", false];
-				private _animateTrain = _x getVariable ["ATRAIN_Remove_Animate_Train",false];
+				private _animateTrain = _x getVariable ["ATRAIN_Remote_Animate_Train",false];
 				if(_trainIsBackwards) then {
 					_trainVectorDirection = _trainVectorDirection vectorMultiply -1;
 				};
@@ -1835,6 +2038,11 @@ ATRAIN_fnc_simulateTrainVelocity = {
 		_trainAcceleration = 0;
 		_movementDirection = 0;
 		_trainDrag = _trainDrag * 2;
+	};
+	
+	private _trainModelReversed = _train getVariable ["ATRAIN_Remote_Is_Model_Reversed",false];
+	if(_trainModelReversed) then {
+		_movementDirection = _movementDirection * -1;
 	};
 	
 	private _trainMaxVelocity = _train getVariable ["ATRAIN_Remote_Train_Max_Velocity",12];
@@ -2263,16 +2471,7 @@ ATRAIN_fnc_managePlayerTrainActions = {
 	};
 	
 };
-
-
-if(hasInterface) then {
-	[] spawn {
-		while {true} do {
-			[] call ATRAIN_fnc_managePlayerTrainActions;
-			sleep 0.1;
-		};
-	};
-};
+		
 		
 ATRAIN_fnc_isPassengerMoving = {
 	params ["_player"];
@@ -2378,10 +2577,33 @@ ATRAIN_fnc_preloadAllTracksNearEditorPlacedConnections = {
 
 ATRAIN_fnc_init = {
 
+	[] call ATRAIN_fnc_rebuildArrayLookupIndexes;
+	
 	[] call ATRAIN_fnc_preloadAllTracksNearEditorPlacedConnections;
 
 	// Start train drawing handler
 	addMissionEventHandler ["EachFrame", {call ATRAIN_fnc_drawEventHandler}];
+	
+	// Start player action handler
+	if(hasInterface) then {
+		[] spawn {
+			while {true} do {
+				[] call ATRAIN_fnc_managePlayerTrainActions;
+				sleep 0.1;
+			};
+		};
+	};
+	
+	// Start train particle effects simulation handler
+	[] spawn {
+		while {true} do {
+			private _registeredTrains = missionNamespace getVariable ["ATRAIN_Registered_Trains",[]];
+			{
+				[_x] call ATRAIN_fnc_simulateTrainParticleEffects;
+			} forEach _registeredTrains;
+			sleep 1;
+		};
+	};
 
 	// Start train speed simulation handler
 	[] spawn {

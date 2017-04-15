@@ -1,0 +1,12 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath files('libs/PBOGradlePlugin.jar')
+		classpath group: 'commons-io', name: 'commons-io', version: '2.5'
+	}
+}
+
+apply plugin: 'duda.a3.pbo'
+
