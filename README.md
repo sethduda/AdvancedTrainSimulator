@@ -28,13 +28,18 @@ Train Driver Controls:
  - Enabled / Disable Cruise Control (C key): When enabled, the train will maintain its current speed automatically (even if you jump out of the train - runaway train!)
  - Break (B key): A faster way to slow down your train besides holding down the Move Backwards key
  - Exit Train (delete key): Exit the current train.
- 
+- First Person / 3rd Person View (numpad-enter key): Toggles between first and 3rd person in the train. You can also use the mouse wheel to zoom into 1st person.
+- Horn (H key): Train horn (hold for longer horn)
+- Bells (G key): Train bells (hold for longer bells)
+- Turn off Engine (E key): Turn off engine when train isn't moving
+
  Note: If you don't hold left or right while passing an intersection, the train will choose the path that requires the least amount of turning.
  
 Train Passenger Controls:
 
  - Exit Train (delete key): Exit the current train
- 
+- First Person / 3rd Person View (numpad-enter key): Toggles between first and 3rd person in the train. You can also use the mouse wheel to zoom into 1st person.
+
 Train Placement
 
 Train objects can be placed on any tracks, including custom tracks. The train must be placed on top of the track. It's not important that the train object lines up perfectly. As long as it's on top of the track, it will work. All existing trains on the Tanoa map will work as-is. Currently, all of the train objects from APEX and CUPS are supported.
@@ -88,6 +93,7 @@ class CfgRemoteExec
 		class ATRAIN_fnc_updateTrackMap { allowedTargets=2; }; 
 		class ATRAIN_fnc_hideTrainObjectGlobal { allowedTargets=2; }; 
 		class ATRAIN_fnc_hidePlayerObjectGlobal { allowedTargets=2; };
+                class ATRAIN_fnc_requestATSInstall { allowedTargets=2; };
 	};
 };
 ```
@@ -96,14 +102,3 @@ class CfgRemoteExec
 
 https://github.com/sethduda/AdvancedTrainSimulator/issues 
 
----
-
-The MIT License (MIT)
-
-Copyright (c) 2017 Seth Duda
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
